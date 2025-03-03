@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AdminController;
 
 // Главная страница
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -24,4 +25,10 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     // Выход из системы
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+});
+
+// Маршруты администратора
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
+
 });

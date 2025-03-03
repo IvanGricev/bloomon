@@ -20,7 +20,11 @@ class User extends Authenticatable
         'email',
         'password',
         'is_active',
+        'role',
     ];
+
+    const ROLE_ADMIN = 'admin';
+    const ROLE_USER = 'user';
 
     /**
      * Атрибуты, которые должны быть скрыты для массивов.
