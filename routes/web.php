@@ -21,22 +21,41 @@ use App\Http\Controllers\Admin\AdminPromotionController;
 */
 Route::get('/', [MainController::class, 'index'])->name('home');
 
+// Статические страницы, упомянутые в навбаре
+Route::get('/ideas', function () {
+    return view('ideas');
+})->name('ideas');
+
+Route::get('/delivery', function () {
+    return view('delivery');
+})->name('delivery');
+
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
+
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
+
 // Маршруты авторизации и регистрации
 Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::get('/register', [AuthController::class, 'registerForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
-
-// Если требуется, можно разместить страницу выхода как GET, но чаще используют POST
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Маршруты для товаров (каталог)
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 
 /*
 |--------------------------------------------------------------------------
 | Маршруты для авторизованных пользователей
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->group(function(){
-    // Работа с заказами
+Route::middleware('auth')->group(function () {
+    // Заказы для клиента (личный кабинет)
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
@@ -58,13 +77,11 @@ Route::middleware('auth')->group(function(){
 |--------------------------------------------------------------------------
 | Административные маршруты
 |--------------------------------------------------------------------------
-|
 | Эти маршруты доступны только авторизованным пользователям с ролью администратора.
-| Для этого используется middleware 'admin'. Вам нужно создать соответствующий middleware,
-| который проверяет, что у текущего пользователя поле 'role' равно 'admin'.
-|
+|--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Дашборд
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // Управление заказами
