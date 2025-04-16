@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    use HasFactory;
-
     // Если требуется, определите таблицу вручную (по умолчанию используется 'users')
     // protected $table = 'users';
+
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',
