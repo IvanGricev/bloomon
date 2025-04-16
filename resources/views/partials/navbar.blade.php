@@ -29,7 +29,7 @@
                     @auth
                         @if(auth()->user()->role === 'admin')
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('admin.dashboard') }}">Админ-панель</a>
+                                <a class="nav-link" href="{{ route('admin.index') }}">Админ-панель</a>
                             </li>
                         @endif
                         @if(auth()->user()->role === 'client')

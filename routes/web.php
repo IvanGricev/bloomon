@@ -21,7 +21,6 @@ use App\Http\Controllers\Admin\AdminPromotionController;
 */
 Route::get('/', [MainController::class, 'index'])->name('home');
 
-// Статические страницы, упомянутые в навбаре
 Route::get('/ideas', function () {
     return view('ideas');
 })->name('ideas');
@@ -45,7 +44,7 @@ Route::get('/register', [AuthController::class, 'registerForm'])->name('register
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Маршруты для товаров (каталог)
+// Каталог товаров
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 
@@ -55,7 +54,7 @@ Route::get('/products/{id}', [ProductController::class, 'show'])->name('products
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
-    // Заказы для клиента (личный кабинет)
+    // Личный кабинет (Заказы)
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
@@ -75,14 +74,14 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Административные маршруты
+| Административные маршруты (только для администраторов)
 |--------------------------------------------------------------------------
-| Эти маршруты доступны только авторизованным пользователям с ролью администратора.
-|--------------------------------------------------------------------------
+| Для этих маршрутов настроен middleware 'admin', который проверяет,
+| что Auth::user()->role === 'admin'.
 */
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Дашборд
-    Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+    // Главная страница админ-панели с навигацией и дашбордом
+    Route::get('/', [AdminDashboardController::class, 'index'])->name('index');
 
     // Управление заказами
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
@@ -90,7 +89,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/orders/{id}', [AdminOrderController::class, 'update'])->name('orders.update');
     Route::delete('/orders/{id}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
 
-    // Управление товарами (используем ресурсный контроллер)
+    // Управление товарами (ресурсный контроллер)
     Route::resource('products', AdminProductController::class);
 
     // Управление пользователями
@@ -99,6 +98,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
     Route::post('/users/{id}/restore', [AdminUserController::class, 'restore'])->name('users.restore');
 
-    // Управление акциями
+    // Управление акциями (ресурсный контроллер)
     Route::resource('promotions', AdminPromotionController::class);
 });

@@ -1,8 +1,11 @@
 @extends('main')
 
 @section('content')
-    <h1>Административная панель</h1>
-    <div class="row">
+<div class="container my-5">
+    <h1 class="mb-4">Панель администратора</h1>
+    
+    <!-- Функционал дашборда: карточки с метриками -->
+    <div class="row mb-5">
         <div class="col-md-3">
             <div class="card text-white bg-primary mb-3">
                 <div class="card-body">
@@ -36,4 +39,14 @@
             </div>
         </div>
     </div>
+    
+    <!-- Навигационное меню для перехода в другие разделы админ-панели -->
+    <h2>Навигация по разделам</h2>
+    <ul class="list-group">
+        <li class="list-group-item"><a href="{{ route('admin.orders.index') }}">Заказы</a></li>
+        <li class="list-group-item"><a href="{{ route('admin.products.index') }}">Товары</a></li>
+        <li class="list-group-item"><a href="{{ route('admin.users.index') }}">Пользователи</a></li>
+        <li class="list-group-item"><a href="{{ route('admin.promotions.index') }}">Акции</a></li>
+    </ul>
+</div>
 @endsection
