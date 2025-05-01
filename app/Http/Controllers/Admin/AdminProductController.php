@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\Category;
 
 class AdminProductController extends Controller
 {
@@ -16,22 +17,40 @@ class AdminProductController extends Controller
 
     public function create()
     {
-         return view('admin.products.create');
+        $categories = Category::all();
+    
+        return view('admin.products.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
-         $validated = $request->validate([
-              'name'        => 'required|string',
-              'description' => 'nullable|string',
-              'price'       => 'required|numeric',
-              'category_id' => 'required|exists:categories,id',
-              'photo'       => 'nullable|string',
-         ]);
-         Product::create($validated);
-         return redirect()->route('admin.products.index')->with('success', 'Товар создан.');
-    }
+        $validated = $request->validate([
+            'name'        => 'required|string',
+            'description' => 'nullable|string',
+            'price'       => 'required|numeric',
+            'category_id' => 'required|exists:categories,id',
+            'photo' => 'required|image|max:2048', // максимальный размер 2 Мб, можно настроить
+        ]);
 
+        if ($request->hasFile('photo')) {
+            // Сохраним изображение в папку 'products' в диске 'public'
+            $path = $request->file('photo')->store('products', 'public');
+            // $path будет содержать путь вида "products/filename.jpg"
+        } else {
+            $path = null;
+        }
+
+        // Создаем товар, включая путь к изображению
+        $product = Product::create([
+            'name'        => $validated['name'],
+            'description' => 'nullable|string',
+            'price'       => 'required|numeric',
+            'category_id' => $validated['category_id'],
+            'photo'       => $path, // сохраняем путь в базе
+        ]);
+
+        return redirect()->route('admin.products.index')->with('success', 'Товар создан.');
+    }
     public function edit($id)
     {
          $product = Product::findOrFail($id);

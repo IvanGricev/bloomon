@@ -25,8 +25,9 @@
             </select>
         </div>
         <div class="mb-3">
-            <label for="photo" class="form-label">URL изображения</label>
-            <input type="url" class="form-control" name="photo" id="photo">
+            <label for="photo" class="form-label">Изображение товара</label>
+            <input type="file" class="form-control" name="photo" id="photo" accept="image/*" required>
+            <small class="form-text text-muted">Выберите изображение или перетащите файл сюда.</small>
         </div>
         <button type="submit" class="btn btn-success">Создать</button>
     </form>
