@@ -19,20 +19,20 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-           'name'     => 'required|string|max:255',
-           'email'    => 'required|string|email|max:255|unique:users',
-           'password' => 'required|string|min:6|confirmed',
+           'name'     => 'required|string|min:2|max:255',  // Имя должно быть минимум 2 символа
+           'email'    => 'required|string|email|max:255|unique:users', // Проверяет корректность email
+           'password' => 'required|string|min:6|confirmed', // Пароль минимум 6 символов и обязательно совпадение с password_confirmation
         ]);
-
+    
         $user = User::create([
            'name'     => $request->name,
            'email'    => $request->email,
            'password' => Hash::make($request->password),
-           'role'     => 'client'   // по умолчанию клиент
+           'role'     => 'client'
         ]);
-
-        // Авторизуем пользователя
+    
         Auth::login($user);
+    
         return redirect()->route('home')->with('success', 'Регистрация прошла успешно!');
     }
 
@@ -45,12 +45,18 @@ class AuthController extends Controller
     // Вход пользователя
     public function login(Request $request)
     {
+        $request->validate([
+            'email'    => 'required|email', // Проверка корректного email
+            'password' => 'required|string|min:6', // Пароль минимум 6 символов
+        ]);
+    
         $credentials = $request->only('email', 'password');
-
+    
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->route('home')->with('success', 'Вы успешно вошли в систему!');
         }
+    
         return back()->withErrors(['email' => 'Неверные учетные данные.']);
     }
 
