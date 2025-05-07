@@ -14,7 +14,10 @@ class Order extends Model
         'total_price',
         'status',
         'order_date',
-        'delivery_date'
+        'delivery_date',
+        'payment_method',
+        'address',    // добавляем поле адреса
+        'phone'       // добавляем поле телефона
     ];
 
     // Заказ принадлежит пользователю

@@ -36,7 +36,7 @@ class OrderController extends Controller
             'address'        => 'required|string',
             'phone'          => 'required|string',
         ]);
-    
+
         $order = Order::create([
             'user_id'        => Auth::id(),
             'total_price'    => $validated['total_price'],
@@ -44,8 +44,10 @@ class OrderController extends Controller
             'status'         => 'new', // начальный статус заказа
             'order_date'     => now(),
             'payment_method' => $validated['payment_method'],
+            'address'        => $validated['address'],  // Добавляем адрес доставки
+            'phone'          => $validated['phone'],    // Добавляем телефон
         ]);
-    
+
         // Создание позиций заказа из корзины
         $cart = session()->get('cart', []);
         foreach ($cart as $item) {
@@ -57,13 +59,12 @@ class OrderController extends Controller
         }
         // Очистка корзины
         session()->forget('cart');
-    
-        // Если выбран способ оплаты «card», перенаправляем на страницу оплаты картой
+
         if ($validated['payment_method'] === 'card') {
             return redirect()->route('card.payment.form', ['order_id' => $order->id])
                 ->with('success', 'Заказ создан. Перейдите к оплате картой.');
         }
-    
+
         return redirect()->route('orders.show', $order->id)
             ->with('success', 'Заказ успешно создан. Оплата наличными при получении.');
     }
