@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -8,9 +9,14 @@ class CategorySeeder extends Seeder
 {
     public function run()
     {
-        $categories = ['Цветы', 'Композиции', 'Букеты', 'Подарки'];
-        foreach ($categories as $name) {
-            Category::create(['name' => $name]);
+        $categories = [
+            ['name' => 'Свадебные букеты'],
+            ['name' => 'Романтические букеты'],
+            ['name' => 'Подарочные композиции'],
+        ];
+        
+        foreach ($categories as $category) {
+            Category::create($category);
         }
     }
 }
