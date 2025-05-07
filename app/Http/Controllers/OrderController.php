@@ -30,19 +30,42 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'total_price'   => 'required|numeric',
-            'delivery_date' => 'nullable|date'
+            'total_price'    => 'required|numeric',
+            'delivery_date'  => 'nullable|date',
+            'payment_method' => 'required|in:cash,card',
+            'address'        => 'required|string',
+            'phone'          => 'required|string',
         ]);
-
+    
         $order = Order::create([
             'user_id'       => Auth::id(),
             'total_price'   => $validated['total_price'],
             'delivery_date' => $validated['delivery_date'],
-            'status'        => 'new', // начальный статус заказа
+            'status'        => 'new',
             'order_date'    => now(),
+            'payment_method'=> $validated['payment_method'],
         ]);
-
-        // Здесь можно добавить логику для сохранения позиций заказа (order_items)
+    
+        // Создание позиций заказа
+        $cart = session()->get('cart', []);
+        foreach ($cart as $item) {
+            $order->orderItems()->create([
+                'product_id' => $item['id'],
+                'quantity'   => $item['quantity'],
+                'price'      => $item['price'],
+            ]);
+        }
+        // Очистка корзины
+        session()->forget('cart');
+    
+        // Симуляция обработки платежа: если оплата картой,
+        // можно добавить логику для интеграции с платёжным шлюзом или показать сообщение об успешном платеже.
+        if ($validated['payment_method'] == 'card') {
+            // Здесь могла бы быть интеграция с платёжной системой.
+            // Для симуляции можно изменить статус заказа, например, на 'paid'
+            $order->update(['status' => 'paid']);
+        }
+    
         return redirect()->route('orders.show', $order->id)->with('success', 'Заказ успешно создан.');
     }
 }
