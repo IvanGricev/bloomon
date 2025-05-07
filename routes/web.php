@@ -14,6 +14,9 @@ use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminPromotionController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\PaymentController;
+
+
 /*
 |--------------------------------------------------------------------------
 | Публичные маршруты
@@ -71,12 +74,21 @@ Route::middleware('auth')->group(function () {
     Route::post('/subscriptions', [SubscriptionController::class, 'store'])->name('subscriptions.store');
     Route::delete('/subscriptions/{id}', [SubscriptionController::class, 'destroy'])->name('subscriptions.destroy');
 
-    // Карзина и оплата
+    // Карзина
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add/{productId}', [CartController::class, 'add'])->name('cart.add');
     Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/cart/remove/{productId}', [CartController::class, 'remove'])->name('cart.remove');
     Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+
+    // Заказы
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+
+    // Оплата картой
+    Route::get('/card-payment', [PaymentController::class, 'showCardPaymentForm'])->name('card.payment.form');
+    Route::post('/card-payment', [PaymentController::class, 'processCardPayment'])->name('card.payment.process');
+
 });
 
 /*

@@ -38,15 +38,15 @@ class OrderController extends Controller
         ]);
     
         $order = Order::create([
-            'user_id'       => Auth::id(),
-            'total_price'   => $validated['total_price'],
-            'delivery_date' => $validated['delivery_date'],
-            'status'        => 'new',
-            'order_date'    => now(),
-            'payment_method'=> $validated['payment_method'],
+            'user_id'        => Auth::id(),
+            'total_price'    => $validated['total_price'],
+            'delivery_date'  => $validated['delivery_date'],
+            'status'         => 'new', // начальный статус заказа
+            'order_date'     => now(),
+            'payment_method' => $validated['payment_method'],
         ]);
     
-        // Создание позиций заказа
+        // Создание позиций заказа из корзины
         $cart = session()->get('cart', []);
         foreach ($cart as $item) {
             $order->orderItems()->create([
@@ -58,14 +58,13 @@ class OrderController extends Controller
         // Очистка корзины
         session()->forget('cart');
     
-        // Симуляция обработки платежа: если оплата картой,
-        // можно добавить логику для интеграции с платёжным шлюзом или показать сообщение об успешном платеже.
-        if ($validated['payment_method'] == 'card') {
-            // Здесь могла бы быть интеграция с платёжной системой.
-            // Для симуляции можно изменить статус заказа, например, на 'paid'
-            $order->update(['status' => 'paid']);
+        // Если выбран способ оплаты «card», перенаправляем на страницу оплаты картой
+        if ($validated['payment_method'] === 'card') {
+            return redirect()->route('card.payment.form', ['order_id' => $order->id])
+                ->with('success', 'Заказ создан. Перейдите к оплате картой.');
         }
     
-        return redirect()->route('orders.show', $order->id)->with('success', 'Заказ успешно создан.');
+        return redirect()->route('orders.show', $order->id)
+            ->with('success', 'Заказ успешно создан. Оплата наличными при получении.');
     }
 }

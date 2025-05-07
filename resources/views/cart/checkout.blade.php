@@ -16,7 +16,7 @@
         </ul>
         <h5 class="mt-3">Общая сумма: {{ number_format($totalPrice, 2, ',', ' ') }} руб.</h5>
     </div>
-    
+
     @if($errors->any())
       <div class="alert alert-danger">
           <ul class="mb-0">
@@ -26,7 +26,7 @@
           </ul>
       </div>
     @endif
-    
+
     <form action="{{ route('orders.store') }}" method="POST">
         @csrf
         <div class="mb-3">
@@ -56,11 +56,13 @@
                 </label>
             </div>
         </div>
-        
         <!-- Передаем общую сумму заказа -->
         <input type="hidden" name="total_price" value="{{ $totalPrice }}">
-        
+
         <button type="submit" class="btn btn-primary">Подтвердить заказ</button>
     </form>
+    <p class="mt-3 text-muted">
+        Если вы выбрали оплату картой, после оформления заказа вы будете перенаправлены на страницу для ввода данных карты.
+    </p>
 </div>
 @endsection
