@@ -1,10 +1,26 @@
 @extends('main')
 
 @section('content')
+<div class="container my-5">
     <h1>Редактировать товар</h1>
-    <form action="{{ route('admin.products.update', $product->id) }}" method="POST">
+
+    <!-- Вывод ошибок -->
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                   <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <!-- Форма для редактирования основных данных товара и добавления новых изображений -->
+    <form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
+        
+        <!-- Поля редактирования товара -->
         <div class="mb-3">
             <label for="name" class="form-label">Название товара</label>
             <input type="text" class="form-control" name="name" id="name" value="{{ $product->name }}" required>
@@ -27,10 +43,36 @@
                 @endforeach
             </select>
         </div>
+        
+        <!-- Поле для загрузки новых изображений -->
         <div class="mb-3">
-            <label for="photo" class="form-label">URL изображения</label>
-            <input type="url" class="form-control" name="photo" id="photo" value="{{ $product->photo }}">
+            <label class="form-label">Добавить новые изображения (можно выбрать несколько)</label>
+            <input type="file" name="new_images[]" class="form-control" multiple>
         </div>
-        <button type="submit" class="btn btn-primary">Обновить</button>
+        
+        <button type="submit" class="btn btn-primary">Обновить товар</button>
     </form>
+    
+    <hr>
+    
+    <!-- Вывод уже загруженных изображений -->
+    <h3>Существующие изображения</h3>
+    <div class="row">
+        @foreach($product->images as $image)
+            <div class="col-md-3 mb-3">
+                <div class="card">
+                    <img src="{{ asset('uploads/products/' . $image->image_path) }}" class="card-img-top" alt="Изображение товара">
+                    <div class="card-body text-center">
+                        <!-- Форма для удаления изображения -->
+                        <form action="{{ route('admin.products.image.destroy', ['product' => $product->id, 'image' => $image->id]) }}" method="POST" onsubmit="return confirm('Удалить изображение?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+</div>
 @endsection

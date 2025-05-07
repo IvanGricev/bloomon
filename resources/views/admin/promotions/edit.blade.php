@@ -1,7 +1,20 @@
 @extends('main')
 
 @section('content')
+<div class="container my-5">
     <h1>Редактировать акцию</h1>
+    
+    <!-- Вывод ошибок -->
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form action="{{ route('admin.promotions.update', $promotion->id) }}" method="POST">
         @csrf
         @method('PUT')
@@ -23,4 +36,5 @@
         </div>
         <button type="submit" class="btn btn-primary">Обновить акцию</button>
     </form>
+</div>
 @endsection

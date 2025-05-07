@@ -7,6 +7,9 @@
         @foreach($subscriptions as $subscription)
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
+                    @if($subscription->image)
+                        <img src="{{ asset('uploads/subscriptions/' . $subscription->image) }}" class="card-img-top" alt="{{ $subscription->name }}">
+                    @endif
                     <div class="card-body">
                         <h5 class="card-title">{{ $subscription->name }}</h5>
                         <p class="card-text">{{ $subscription->description }}</p>

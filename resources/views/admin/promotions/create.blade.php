@@ -1,7 +1,20 @@
 @extends('main')
 
 @section('content')
+<div class="container my-5">
     <h1>Создать акцию</h1>
+    
+    <!-- Вывод ошибок -->
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form action="{{ route('admin.promotions.store') }}" method="POST">
         @csrf
         <div class="mb-3">
@@ -22,4 +35,5 @@
         </div>
         <button type="submit" class="btn btn-success">Создать акцию</button>
     </form>
+</div>
 @endsection
