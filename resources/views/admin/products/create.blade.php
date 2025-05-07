@@ -1,34 +1,27 @@
-@extends('main')
+@extends('admin.layout')
 
 @section('content')
-    <h1>Создать товар</h1>
-    <form action="{{ route('admin.products.store') }}" method="POST">
+<div class="container my-5">
+    <h1>Создать новый товар</h1>
+    <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
-            <label for="name" class="form-label">Название товара</label>
-            <input type="text" class="form-control" name="name" id="name" required>
+             <label class="form-label">Название</label>
+             <input type="text" name="name" class="form-control" required>
         </div>
         <div class="mb-3">
-            <label for="description" class="form-label">Описание</label>
-            <textarea class="form-control" name="description" id="description" rows="3"></textarea>
+             <label class="form-label">Описание</label>
+             <textarea name="description" class="form-control" required></textarea>
         </div>
         <div class="mb-3">
-            <label for="price" class="form-label">Цена</label>
-            <input type="number" step="0.01" class="form-control" name="price" id="price" required>
+             <label class="form-label">Цена</label>
+             <input type="number" step="0.01" name="price" class="form-control" required>
         </div>
         <div class="mb-3">
-            <label for="category_id" class="form-label">Категория</label>
-            <select class="form-select" name="category_id" id="category_id" required>
-                @foreach($categories as $category)
-                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                @endforeach
-            </select>
+             <label class="form-label">Изображения (можно выбрать несколько)</label>
+             <input type="file" name="images[]" class="form-control" multiple>
         </div>
-        <div class="mb-3">
-            <label for="photo" class="form-label">Изображение товара</label>
-            <input type="file" class="form-control" name="photo" id="photo" accept="image/*" required>
-            <small class="form-text text-muted">Выберите изображение или перетащите файл сюда.</small>
-        </div>
-        <button type="submit" class="btn btn-success">Создать</button>
+        <button type="submit" class="btn btn-primary">Создать товар</button>
     </form>
+</div>
 @endsection

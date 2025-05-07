@@ -15,14 +15,17 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminPromotionController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
-
-
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PaymentSubscriptionController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Admin\AdminSubscriptionController;
 /*
 |--------------------------------------------------------------------------
 | Публичные маршруты
 |--------------------------------------------------------------------------
 */
-Route::get('/', [MainController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/ideas', function () {
     return view('ideas');
@@ -47,9 +50,18 @@ Route::get('/register', [AuthController::class, 'registerForm'])->name('register
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Каталог товаров
+// Маршруты для блога:
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::post('/blog', [BlogController::class, 'store'])->name('blog.store');
+
+// Маршруты для товаров:
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+Route::post('/products', [ProductController::class, 'store'])->name('products.store');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+
+// Подписки
+Route::get('/subscriptions', [SubscriptionController::class, 'index'])->name('subscriptions.index');
 
 /*
 |--------------------------------------------------------------------------
@@ -57,6 +69,12 @@ Route::get('/products/{id}', [ProductController::class, 'show'])->name('products
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
+
+    // Личный кабинет
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change_password');
+
     // Личный кабинет (Заказы)
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
@@ -89,6 +107,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/card-payment', [PaymentController::class, 'showCardPaymentForm'])->name('card.payment.form');
     Route::post('/card-payment', [PaymentController::class, 'processCardPayment'])->name('card.payment.process');
 
+    // Страница подписок в профиле
+    Route::get('/profile/subscriptions', [SubscriptionController::class, 'profileIndex'])->name('profile.subscriptions');
+
+    // Подписаться / отписаться
+    Route::post('/subscriptions', [SubscriptionController::class, 'store'])->name('subscriptions.store');
+    Route::delete('/subscriptions/{id}', [SubscriptionController::class, 'destroy'])->name('subscriptions.destroy');
+
+    // Оплата подписок
+    Route::get('/subscription-payment', [PaymentSubscriptionController::class, 'showPaymentForm'])->name('subscription.payment.form');
+    Route::post('/subscription-payment', [PaymentSubscriptionController::class, 'processPayment'])->name('subscription.payment.process');
+
 });
 
 /*
@@ -110,6 +139,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Управление товарами (ресурсный контроллер)
     Route::resource('products', AdminProductController::class);
+    Route::get('/admin/products/create', [AdminProductController::class, 'create'])->name('admin.products.create');
+    Route::post('/admin/products', [AdminProductController::class, 'store'])->name('admin.products.store');
 
     // Управление пользователями
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
@@ -119,4 +150,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Управление акциями (ресурсный контроллер)
     Route::resource('promotions', AdminPromotionController::class);
+        
+    // Админские подписки
+    Route::get('/admin/subscriptions/create', [AdminSubscriptionController::class, 'create'])->name('admin.subscriptions.create');
+    Route::post('/admin/subscriptions', [AdminSubscriptionController::class, 'store'])->name('admin.subscriptions.store');
+    
+    // Маршрут для списка подписок в админке
+    Route::get('/admin/subscriptions', [AdminSubscriptionController::class, 'index'])->name('admin.subscriptions.index');
+    
 });

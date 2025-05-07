@@ -8,40 +8,56 @@ use Illuminate\Support\Facades\Auth;
 
 class SubscriptionController extends Controller
 {
-    // Список подписок текущего пользователя
+    /**
+     * Публичный список подписок для всех пользователей.
+     */
     public function index()
     {
-        $subscriptions = Auth::user()->subscriptions;
+        $subscriptions = Subscription::all();
         return view('subscriptions.index', compact('subscriptions'));
     }
-    
-    // Создание подписки
+
+    /**
+     * Страница подписок в профиле пользователя:
+     * выводит все подписки и подписки конкретного пользователя.
+     */
+    public function profileIndex()
+    {
+        $allSubscriptions = Subscription::all();
+        $userSubscriptions = Auth::check() ? Auth::user()->subscriptions : collect();
+        return view('profile.subscriptions', compact('allSubscriptions', 'userSubscriptions'));
+    }
+
+    /**
+     * Подписка пользователя на выбранный план.
+     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'subscription_type' => 'required|string',
-            'frequency'         => 'required|string',
-            'next_delivery_date'=> 'nullable|date'
+        $request->validate([
+            'subscription_id' => 'required|exists:subscriptions,id',
         ]);
 
-        Subscription::create([
-            'user_id'           => Auth::id(),
-            'subscription_type' => $validated['subscription_type'],
-            'frequency'         => $validated['frequency'],
-            'next_delivery_date'=> $validated['next_delivery_date'],
-        ]);
-        
-        return redirect()->back()->with('success', 'Подписка оформлена.');
+        $user = Auth::user();
+        $subscriptionId = $request->input('subscription_id');
+
+        if (!$user->subscriptions->contains($subscriptionId)) {
+            $user->subscriptions()->attach($subscriptionId);
+            return redirect()->back()->with('success', 'Вы успешно подписались!');
+        }
+
+        return redirect()->back()->with('error', 'Вы уже подписаны на эту подписку.');
     }
-    
-    // Отмена подписки
+
+    /**
+     * Отписка пользователя от подписки.
+     */
     public function destroy($id)
     {
-        $subscription = Subscription::findOrFail($id);
-        if ($subscription->user_id != Auth::id()) {
-            abort(403);
+        $user = Auth::user();
+        if ($user->subscriptions->contains($id)) {
+            $user->subscriptions()->detach($id);
+            return redirect()->back()->with('success', 'Вы успешно отписались.');
         }
-        $subscription->delete();
-        return redirect()->back()->with('success', 'Подписка отменена.');
+        return redirect()->back()->with('error', 'Вы не подписаны на эту подписку.');
     }
 }

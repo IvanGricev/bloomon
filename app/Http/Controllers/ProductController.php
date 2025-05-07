@@ -17,7 +17,7 @@ class ProductController extends Controller
     // Отображение карточки конкретного товара
     public function show($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::with('images')->findOrFail($id);
         return view('products.show', compact('product'));
     }
 
@@ -33,15 +33,30 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'        => 'required|string',
-            'description' => 'nullable|string',
+            'name'        => 'required|string|max:255',
+            'description' => 'required|string',
             'price'       => 'required|numeric',
-            'category_id' => 'required|exists:categories,id',
-            'photo'       => 'nullable|string'
+            // Для загрузки нескольких изображений
+            'images.*'    => 'nullable|image|max:2048',
         ]);
 
-        Product::create($validated);
-        return redirect()->route('products.index')->with('success', 'Товар создан.');
+        $product = Product::create([
+            'name'        => $validated['name'],
+            'description' => $validated['description'],
+            'price'       => $validated['price'],
+        ]);
+
+        // Если файлы загружены, сохраняем каждый и создаем запись в связанной таблице
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('uploads/products'), $filename);
+                // Предполагаем, что в модели Product создан метод images() (отношение hasMany)
+                $product->images()->create(['image_path' => $filename]);
+            }
+        }
+
+        return redirect()->route('products.index')->with('success', 'Товар успешно создан!');
     }
 
     // Форма редактирования товара

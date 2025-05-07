@@ -10,15 +10,17 @@ class Subscription extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'name',
         'subscription_type',
         'frequency',
-        'next_delivery_date',
+        'period',
+        'price',
+        'description',
     ];
 
-    // Подписка принадлежит пользователю
-    public function user()
+    // Связь many-to-many: подписка доступна для многих пользователей
+    public function users()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(\App\Models\User::class, 'subscription_user')->withTimestamps();
     }
 }

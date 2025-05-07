@@ -40,7 +40,7 @@ class User extends Authenticatable
 
     public function subscriptions()
     {
-        return $this->hasMany(Subscription::class);
+        return $this->belongsToMany(\App\Models\Subscription::class, 'subscription_user')->withTimestamps();
     }
 
     public function logs()

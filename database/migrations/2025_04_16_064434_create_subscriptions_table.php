@@ -10,13 +10,13 @@ class CreateSubscriptionsTable extends Migration
     {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->string('subscription_type'); // Например, "мини-букет"
-            $table->string('frequency'); // Еженедельно или ежемесячно
-            $table->date('next_delivery_date')->nullable();
+            $table->string('name'); // Название плана подписки
+            $table->string('subscription_type'); // Тип (например, "Романтические", "Свадебные" и т.д.)
+            $table->string('frequency'); // Частота доставки (daily, weekly, и т.п.)
+            $table->string('period');    // Период подписки (month, year)
+            $table->decimal('price', 8, 2);
+            $table->text('description')->nullable();
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
