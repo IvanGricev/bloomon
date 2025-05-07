@@ -9,22 +9,35 @@
         <ul class="list-group">
             @foreach($cart as $item)
                 <li class="list-group-item d-flex justify-content-between">
-                    <span>{{ $item['name'] }} ({{ $item['quantity'] }})</span>
-                    <span>{{ number_format($item['price'] * $item['quantity'], 2, ',', ' ') }} руб.</span>
+                    <span>
+                        {{ $item['name'] }} ({{ $item['quantity'] }})
+                        @if(isset($item['applied_promotion']))
+                            <br>
+                            <small class="text-success">Акция: {{ $item['applied_promotion'] }} ({{ $item['discount'] }}% скидка)</small>
+                        @endif
+                    </span>
+                    <span>{{ number_format($item['discounted_price'] * $item['quantity'], 2, ',', ' ') }} руб.</span>
                 </li>
             @endforeach
         </ul>
-        <h5 class="mt-3">Общая сумма: {{ number_format($totalPrice, 2, ',', ' ') }} руб.</h5>
+        @php
+            $discountTotal = $totalOriginal - $totalDiscounted;
+        @endphp
+        <div class="mt-3">
+            <p>Сумма заказа (без скидки): <strong>{{ number_format($totalOriginal, 2, ',', ' ') }} руб.</strong></p>
+            <p>Сумма скидки: <strong>{{ number_format($discountTotal, 2, ',', ' ') }} руб.</strong></p>
+            <p>Общая сумма к оплате: <strong>{{ number_format($totalDiscounted, 2, ',', ' ') }} руб.</strong></p>
+        </div>
     </div>
-
+    
     @if($errors->any())
-      <div class="alert alert-danger">
-          <ul class="mb-0">
-              @foreach($errors->all() as $error)
-                  <li>{{ $error }}</li>
-              @endforeach
-          </ul>
-      </div>
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                   <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
     @endif
 
     <form action="{{ route('orders.store') }}" method="POST">
@@ -56,9 +69,8 @@
                 </label>
             </div>
         </div>
-        <!-- Передаем общую сумму заказа -->
-        <input type="hidden" name="total_price" value="{{ $totalPrice }}">
-
+        <!-- Передаем итоговую сумму заказа -->
+        <input type="hidden" name="total_price" value="{{ $totalDiscounted }}">
         <button type="submit" class="btn btn-primary">Подтвердить заказ</button>
     </form>
     <p class="mt-3 text-muted">

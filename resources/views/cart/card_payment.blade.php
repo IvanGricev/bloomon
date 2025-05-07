@@ -12,12 +12,18 @@
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
-    
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <p>Сумма заказа (без скидки): <strong>{{ number_format($originalTotal, 2, ',', ' ') }} руб.</strong></p>
+            <p>Сумма скидки: <strong>{{ number_format($discountTotal, 2, ',', ' ') }} руб.</strong></p>
+            <p>Итоговая сумма к оплате: <strong>{{ number_format($discountedTotal, 2, ',', ' ') }} руб.</strong></p>
+        </div>
+    </div>
+
     <form action="{{ route('card.payment.process') }}" method="POST">
         @csrf
-        <!-- Передаем ID заказа через скрытое поле, получаем через query string -->
-        <input type="hidden" name="order_id" value="{{ request('order_id') }}">
-        
+        <input type="hidden" name="order_id" value="{{ $order->id }}">
         <div class="mb-3">
             <label for="card_number" class="form-label">Номер карты</label>
             <input type="text" name="card_number" id="card_number" class="form-control" placeholder="Введите номер карты" required>

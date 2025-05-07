@@ -12,34 +12,59 @@ class CartController extends Controller
      */
     public function index(Request $request)
     {
+        // Получаем корзину из сессии
         $cart = session()->get('cart', []);
+
+        // Получаем активные акции с их категориями
+        $activePromotions = \App\Models\Promotion::active()->with('categories')->get();
+
+        // Проходимся по товарам корзины и переопределяем цены, если акция активна
+        foreach ($cart as &$item) {
+            $product = Product::find($item['id']);
+            // Устанавливаем исходную цену товара из базы
+            $item['original_price'] = $product->price;
+            $item['applied_promotion'] = null;
+
+            foreach ($activePromotions as $promo) {
+                if ($promo->categories->contains($product->category_id)) {
+                    $item['applied_promotion'] = $promo->name;
+                    $item['discount'] = $promo->discount; // в процентах
+                    $item['discounted_price'] = $product->price * ((100 - $promo->discount) / 100);
+                    break; // Если найдено, выходим из цикла
+                }
+            }
+
+            // Если акция не применена – итоговая цена равна исходной
+            if (!isset($item['discounted_price'])) {
+                $item['discounted_price'] = $product->price;
+            }
+        }
+        unset($item);
+
         return view('cart.index', compact('cart'));
-    }
+    }    
 
     /**
      * Добавление товара в корзину.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $productId
      */
     public function add(Request $request, $productId)
     {
         // Получаем товар или выбрасываем 404, если не найден.
         $product = Product::findOrFail($productId);
-        // Значение количества (по умолчанию 1)
         $quantity = $request->input('quantity', 1);
-        
+
         $cart = session()->get('cart', []);
         // Если товар уже есть в корзине, увеличиваем количество.
         if (isset($cart[$productId])) {
             $cart[$productId]['quantity'] += $quantity;
         } else {
             $cart[$productId] = [
-                'id'       => $product->id,
-                'name'     => $product->name,
-                'price'    => $product->price,
-                'quantity' => $quantity,
-                'photo'    => $product->photo,
+                'id'          => $product->id,
+                'name'        => $product->name,
+                'price'       => $product->price,
+                'quantity'    => $quantity,
+                'photo'       => $product->photo,
+                'category_id' => $product->category_id, // Добавлено для расчёта скидок
             ];
         }
         session()->put('cart', $cart);
@@ -52,10 +77,18 @@ class CartController extends Controller
     public function update(Request $request)
     {
         $cart = session()->get('cart', []);
-        $quantities = $request->input('quantities', []);
-        foreach ($quantities as $productId => $quantity) {
-            if (isset($cart[$productId])) {
-                $cart[$productId]['quantity'] = $quantity;
+        $productId = $request->input('productId');
+        $action = $request->input('action');
+    
+        if (isset($cart[$productId])) {
+            if ($action === 'increment') {
+                $cart[$productId]['quantity']++;
+            } elseif ($action === 'decrement') {
+                $cart[$productId]['quantity']--;
+                // Если количество меньше 1, убираем товар из корзины
+                if ($cart[$productId]['quantity'] < 1) {
+                    unset($cart[$productId]);
+                }
             }
         }
         session()->put('cart', $cart);
@@ -76,7 +109,7 @@ class CartController extends Controller
     }
 
     /**
-     * Вывод страницы оформления заказа (checkout).
+     * Вывод страницы оформления заказа (checkout) с перерасчётом скидок.
      */
     public function checkout()
     {
@@ -84,11 +117,33 @@ class CartController extends Controller
         if (empty($cart)) {
             return redirect()->route('cart.index')->with('error', 'Ваша корзина пуста.');
         }
-        // Расчёт общей суммы
-        $totalPrice = 0;
-        foreach ($cart as $item) {
-            $totalPrice += $item['price'] * $item['quantity'];
+        
+        $activePromotions = \App\Models\Promotion::active()->with('categories')->get();
+        $totalOriginal = 0;
+        $totalDiscounted = 0;
+        
+        foreach ($cart as &$item) {
+            // Получаем обновлённые данные товара
+            $product = Product::find($item['id']);
+            $item['original_price'] = $product->price;
+            $item['applied_promotion'] = null;
+            foreach ($activePromotions as $promo) {
+                if (isset($item['category_id']) && $promo->categories->contains($item['category_id'])) {
+                    $item['applied_promotion'] = $promo->name;
+                    $item['discount'] = $promo->discount;
+                    $item['discounted_price'] = $product->price * ((100 - $promo->discount) / 100);
+                    break;
+                }
+            }
+            if (!isset($item['discounted_price'])) {
+                $item['discounted_price'] = $product->price;
+            }
+            
+            $totalOriginal += $product->price * $item['quantity'];
+            $totalDiscounted += $item['discounted_price'] * $item['quantity'];
         }
-        return view('cart.checkout', compact('cart', 'totalPrice'));
+        unset($item);
+        
+        return view('cart.checkout', compact('cart', 'totalOriginal', 'totalDiscounted'));
     }
 }

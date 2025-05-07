@@ -8,12 +8,37 @@ use App\Models\Order;
 class PaymentController extends Controller
 {
     /**
-     * Отображение формы оплаты картой.
+     * Отображение формы оплаты картой с разбивкой итоговой суммы заказа.
+     *
+     * Здесь мы получаем ID заказа через query string (например, /card-payment?order_id=123),
+     * загружаем заказ с его позициями, затем для каждой позиции запрашиваем исходную цену продукта
+     * (через связь orderItems.product) и вычисляем:
+     *   - Сумму до скидки (исходная цена * количество)
+     *   - Итоговую сумму (цена, сохранённая в заказе, * количество)
+     *   - Разницу как величину скидки.
+     * Итоговые значения передаются в шаблон.
      */
     public function showCardPaymentForm(Request $request)
     {
-        // Передаем order_id через query string, например: /card-payment?order_id=123
-        return view('cart.card_payment');
+        $orderId = $request->query('order_id');
+        $order = Order::with('orderItems.product')->findOrFail($orderId);
+
+        $originalTotal = 0;
+        $discountedTotal = 0;
+        
+        foreach ($order->orderItems as $item) {
+            $originalPrice = $item->product->price;
+            $originalTotal += $originalPrice * $item->quantity;
+            $discountedTotal += $item->price * $item->quantity;
+        }
+        $discountTotal = $originalTotal - $discountedTotal;
+
+        return view('cart.card_payment', compact(
+            'order',
+            'originalTotal',
+            'discountTotal',
+            'discountedTotal'
+        ));
     }
 
     /**
@@ -28,8 +53,6 @@ class PaymentController extends Controller
             'cvv'         => 'required|string',
         ]);
 
-        // Здесь можно добавить интеграцию с платежным провайдером.
-        // Для симуляции считаем платёж успешным и обновляем статус заказа на "paid".
         $order = Order::findOrFail($data['order_id']);
         $order->update(['status' => 'paid']);
 

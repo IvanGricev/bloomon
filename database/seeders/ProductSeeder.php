@@ -4,37 +4,25 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Product;
+use App\Models\Category;
 
 class ProductSeeder extends Seeder
 {
     public function run()
     {
-        $products = [
-            [
-                'name'        => 'Букет роз',
-                'description' => 'Элегантный букет из красных роз, идеально подходящий для романтического вечера.',
-                'price'       => 1500.00,
-                'category_id' => 1, // Предполагается, что категория с id=1 уже существует
-                'photo'       => 'https://via.placeholder.com/300?text=Розы',
-            ],
-            [
-                'name'        => 'Букет тюльпанов',
-                'description' => 'Яркий и свежий букет разноцветных тюльпанов для весеннего настроения.',
-                'price'       => 1200.00,
-                'category_id' => 2,
-                'photo'       => 'https://via.placeholder.com/300?text=Тюльпаны',
-            ],
-            [
-                'name'        => 'Композиция из ромашек',
-                'description' => 'Нежная композиция из ромашек и зелени для искренних и теплых чувств.',
-                'price'       => 1000.00,
-                'category_id' => 3,
-                'photo'       => 'https://via.placeholder.com/300?text=Ромашки',
-            ],
-        ];
+        $categories = Category::all();
         
-        foreach ($products as $product) {
-            Product::create($product);
+        foreach ($categories as $category) {
+            // Для каждой категории создаём 2 товара
+            for ($i = 1; $i <= 2; $i++) {
+                Product::create([
+                    'name'        => $category->name . ' Продукт ' . $i,
+                    'description' => 'Описание для ' . $category->name . ' продукта ' . $i,
+                    'price'       => rand(1000, 5000),
+                    'category_id' => $category->id,
+                    'photo'       => null,
+                ]);
+            }
         }
     }
 }

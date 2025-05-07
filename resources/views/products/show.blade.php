@@ -28,12 +28,24 @@
             @endif
         </div>
         
-        <!-- Правая колонка: Информация о товаре -->
+        <!-- Правая колонка: Информация о товаре и форма заказа -->
         <div class="col-md-6">
             <h1>{{ $product->name }}</h1>
             <h2>{{ number_format($product->price, 2, ',', ' ') }} руб.</h2>
             <p>{{ $product->description }}</p>
-            <!-- Дополнительные кнопки (добавить в корзину и т.д.) -->
+            
+            <!-- Форма заказа -->
+            <div class="mt-4">
+                <form action="{{ route('cart.add', $product->id) }}" method="POST">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Количество</label>
+                        <input type="number" name="quantity" id="quantity" value="1" min="1" class="form-control" style="width:100px;">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Добавить в корзину</button>
+                </form>
+            </div>
+            <!-- Дополнительные кнопки или информация можно добавить здесь -->
         </div>
     </div>
 </div>

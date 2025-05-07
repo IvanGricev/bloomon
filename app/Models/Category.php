@@ -2,20 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    use HasFactory;
+    protected $fillable = ['name'];
 
-    protected $fillable = [
-        'name'
-    ];
-
-    // Категория может включать множество товаров
+    public function promotions()
+    {
+        return $this->belongsToMany(\App\Models\Promotion::class, 'category_promotion')->withTimestamps();
+    }
+    
     public function products()
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(\App\Models\Product::class);
     }
 }
