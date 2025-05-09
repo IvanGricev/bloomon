@@ -8,6 +8,10 @@
     <p><strong>Общая сумма:</strong> {{ number_format($order->total_price, 2, ',', ' ') }} руб.</p>
     <p><strong>Адрес доставки:</strong> {{ $order->address ?? 'Не указан' }}</p>
     <p><strong>Телефон:</strong> {{ $order->phone ?? 'Не указан' }}</p>
+    <p><strong>Время доставки:</strong> {{ $order->delivery_time_slot ?: 'Не указано' }}</p>
+    @if($order->delivery_preferences)
+        <p><strong>Пожелания к доставке:</strong> {{ $order->delivery_preferences }}</p>
+    @endif
     <p>
         <strong>Способ оплаты:</strong> 
         @if($order->payment_method === 'cash')

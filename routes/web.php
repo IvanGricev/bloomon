@@ -98,7 +98,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/cart/remove/{productId}', [CartController::class, 'remove'])->name('cart.remove');
     Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
-
+    Route::get('/delivery-time-slots', [OrderController::class, 'getTimeSlots'])->name('delivery.time-slots');
     // Оплата картой
     Route::get('/card-payment', [PaymentController::class, 'showCardPaymentForm'])->name('card.payment.form');
     Route::post('/card-payment', [PaymentController::class, 'processCardPayment'])->name('card.payment.process');
