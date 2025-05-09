@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
             data.slots.forEach(slot => {
                 const option = document.createElement('option');
                 option.value = slot.slot;
-                option.textContent = `${slot.slot} (доступно мест: ${slot.available})`;
+                option.textContent = `${slot.slot}`;
                 timeSlotSelect.appendChild(option);
             });
             timeSlotSelect.disabled = false;

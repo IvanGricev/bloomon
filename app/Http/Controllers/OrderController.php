@@ -52,8 +52,8 @@ class OrderController extends Controller
             'total_price' => 'required|numeric'
         ]);
     
-        if (!$this->deliveryTimeService->isSlotAvailable($validated['delivery_date'], $validated['delivery_time_slot'])) {
-            return back()->withErrors(['delivery_time_slot' => 'Это время доставки уже недоступно. Пожалуйста, выберите другое.']);
+        if (!$this->deliveryTimeService->isValidTimeSlot($validated['delivery_date'], $validated['delivery_time_slot'])) {
+            return back()->withErrors(['delivery_time_slot' => 'Выбранное время доставки недоступно. Пожалуйста, выберите другое время.']);
         }
 
         // Get cart contents
@@ -61,10 +61,6 @@ class OrderController extends Controller
         if(empty($cart)) {
             return redirect()->route('cart.index')->with('error', 'Ваша корзина пуста!');
         }
-
-        // Calculate final price with promotions
-        $activePromotions = Promotion::active()->with('categories')->get();
-        $totalPrice = 0;
 
         // Create the order
         $order = Order::create([
@@ -80,7 +76,10 @@ class OrderController extends Controller
             'order_date' => now()
         ]);
 
-        // Process each cart item
+        // Process cart items and promotions
+        $activePromotions = Promotion::active()->with('categories')->get();
+        $totalPrice = 0;
+
         foreach ($cart as $item) {
             $product = Product::find($item['id']);
             if (!$product) {
