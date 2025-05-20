@@ -3,15 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     // Отображение каталога товаров
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::all();
-        return view('products.index', compact('products'));
+        $query = Product::query();
+
+        // Поиск по названию или категории
+        if ($request->has('search')) {
+            $search = $request->get('search');
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhereHas('category', function($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Фильтрация по категориям
+        if ($request->has('categories')) {
+            $query->whereIn('category_id', $request->get('categories'));
+        }
+
+        $products = $query->get();
+        $categories = Category::all();
+
+        return view('products.index', compact('products', 'categories'));
     }
 
     // Отображение карточки конкретного товара
