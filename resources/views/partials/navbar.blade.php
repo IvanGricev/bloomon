@@ -52,6 +52,9 @@
               <li>
                 <a class="dropdown-item" href="{{ route('profile.subscriptions') }}">Подписки</a>
               </li>
+              <li>
+                <a class="dropdown-item" href="{{ route('support.index') }}">Мои запросы в поддержку</a>
+              </li>
               @if(auth()->user()->role === 'admin')
                 <li>
                   <hr class="dropdown-divider">

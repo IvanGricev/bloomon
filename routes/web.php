@@ -20,6 +20,8 @@ use App\Http\Controllers\PaymentSubscriptionController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\AdminSubscriptionController;
+use App\Http\Controllers\SupportController;
+use App\Http\Controllers\Admin\AdminSupportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -109,6 +111,13 @@ Route::middleware('auth')->group(function () {
     // Оплата подписок
     Route::get('/subscription-payment', [PaymentSubscriptionController::class, 'showPaymentForm'])->name('subscription.payment.form');
     Route::post('/subscription-payment', [PaymentSubscriptionController::class, 'processPayment'])->name('subscription.payment.process');
+
+    // Маршруты для поддержки
+    Route::get('/support', [SupportController::class, 'index'])->name('support.index');
+    Route::get('/support/create', [SupportController::class, 'create'])->name('support.create');
+    Route::post('/support', [SupportController::class, 'store'])->name('support.store');
+    Route::get('/support/{ticket}', [SupportController::class, 'show'])->name('support.show');
+    Route::post('/support/{ticket}/message', [SupportController::class, 'storeMessage'])->name('support.message.store');
 });
 
 /*
@@ -154,4 +163,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('subscriptions/{id}/edit', [AdminSubscriptionController::class, 'edit'])->name('subscriptions.edit');
     Route::put('subscriptions/{id}', [AdminSubscriptionController::class, 'update'])->name('subscriptions.update');
     Route::delete('subscriptions/{id}', [AdminSubscriptionController::class, 'destroy'])->name('subscriptions.destroy');
+
+    // Маршруты для управления поддержкой
+    Route::get('/support', [AdminSupportController::class, 'index'])->name('support.index');
+    Route::get('/support/{ticket}', [AdminSupportController::class, 'show'])->name('support.show');
+    Route::post('/support/{ticket}/status', [AdminSupportController::class, 'updateStatus'])->name('support.status.update');
+    Route::post('/support/{ticket}/message', [AdminSupportController::class, 'storeMessage'])->name('support.message.store');
 });

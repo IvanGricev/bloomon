@@ -48,6 +48,18 @@
         </div>
     </div>
     
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Запросы в поддержку</h5>
+                    <p class="card-text">Управление запросами пользователей в службу поддержки</p>
+                    <a href="{{ route('admin.support.index') }}" class="btn btn-primary">Перейти</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Навигационное меню для перехода в другие разделы админ-панели -->
     <h2>Навигация по разделам</h2>
     <ul class="list-group">
