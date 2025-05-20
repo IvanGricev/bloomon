@@ -34,19 +34,114 @@
             <h2>{{ number_format($product->price, 2, ',', ' ') }} руб.</h2>
             <p>{{ $product->description }}</p>
             
+            <!-- Информация о наличии -->
+            <div class="availability-info mb-3">
+                @if($product->quantity > 0)
+                    @if($product->quantity <= 25)
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Осталось всего {{ $product->quantity }} {{ trans_choice('товар|товара|товаров', $product->quantity) }}
+                        </div>
+                    @else
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i>
+                            В наличии
+                        </div>
+                    @endif
+                @else
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle"></i>
+                        Нет в наличии
+                    </div>
+                @endif
+            </div>
+            
             <!-- Форма заказа -->
             <div class="mt-4">
-                <form action="{{ route('cart.add', $product->id) }}" method="POST">
-                    @csrf
-                    <div class="mb-3">
-                        <label for="quantity" class="form-label">Количество</label>
-                        <input type="number" name="quantity" id="quantity" value="1" min="1" class="form-control" style="width:100px;">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Добавить в корзину</button>
-                </form>
+                @if($product->quantity > 0)
+                    <form action="{{ route('cart.add', $product->id) }}" method="POST" id="addToCartForm">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">Количество</label>
+                            <div class="input-group" style="width: 150px;">
+                                <button type="button" class="btn btn-outline-secondary" onclick="decreaseQuantity()">-</button>
+                                <input type="number" 
+                                       name="quantity" 
+                                       id="quantity" 
+                                       value="1" 
+                                       min="1" 
+                                       max="{{ $product->quantity }}" 
+                                       class="form-control text-center"
+                                       onchange="validateQuantity(this.value)">
+                                <button type="button" class="btn btn-outline-secondary" onclick="increaseQuantity()">+</button>
+                            </div>
+                            <small class="text-muted">Доступно: {{ $product->quantity }} {{ trans_choice('единица|единицы|единиц', $product->quantity) }}</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Добавить в корзину</button>
+                    </form>
+                @else
+                    <button class="btn btn-secondary" disabled>Нет в наличии</button>
+                @endif
             </div>
-            <!-- Дополнительные кнопки или информация можно добавить здесь -->
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    const maxQuantity = {{ $product->quantity }};
+    
+    function validateQuantity(value) {
+        const input = document.getElementById('quantity');
+        value = parseInt(value);
+        
+        if (isNaN(value) || value < 1) {
+            input.value = 1;
+        } else if (value > maxQuantity) {
+            input.value = maxQuantity;
+        }
+    }
+    
+    function decreaseQuantity() {
+        const input = document.getElementById('quantity');
+        const currentValue = parseInt(input.value);
+        if (currentValue > 1) {
+            input.value = currentValue - 1;
+        }
+    }
+    
+    function increaseQuantity() {
+        const input = document.getElementById('quantity');
+        const currentValue = parseInt(input.value);
+        if (currentValue < maxQuantity) {
+            input.value = currentValue + 1;
+        }
+    }
+    
+    // Валидация формы перед отправкой
+    document.getElementById('addToCartForm').addEventListener('submit', function(e) {
+        const quantity = parseInt(document.getElementById('quantity').value);
+        if (quantity > maxQuantity) {
+            e.preventDefault();
+            alert('Запрошенное количество превышает доступное');
+        }
+    });
+</script>
+@endpush
+
+@push('styles')
+<style>
+    .availability-info .alert {
+        margin-bottom: 0;
+    }
+    
+    .input-group .form-control {
+        text-align: center;
+    }
+    
+    .input-group .btn {
+        width: 40px;
+    }
+</style>
+@endpush
 @endsection

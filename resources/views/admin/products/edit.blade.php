@@ -43,6 +43,15 @@
                 @endforeach
             </select>
         </div>
+        <div class="mb-3">
+            <label for="quantity" class="form-label">Количество</label>
+            <div class="input-group">
+                <input type="number" class="form-control" name="quantity" id="quantity" value="{{ $product->quantity }}" min="0" required>
+                <button type="button" class="btn btn-outline-secondary" onclick="decreaseQuantity()">-</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="increaseQuantity()">+</button>
+            </div>
+            <small class="text-muted">Текущее количество: {{ $product->quantity }} {{ trans_choice('единица|единицы|единиц', $product->quantity) }}</small>
+        </div>
         
         <!-- Поле для загрузки новых изображений -->
         <div class="mb-3">
@@ -75,4 +84,34 @@
         @endforeach
     </div>
 </div>
+
+@push('scripts')
+<script>
+    function decreaseQuantity() {
+        const input = document.getElementById('quantity');
+        const currentValue = parseInt(input.value);
+        if (currentValue > 0) {
+            input.value = currentValue - 1;
+        }
+    }
+    
+    function increaseQuantity() {
+        const input = document.getElementById('quantity');
+        const currentValue = parseInt(input.value);
+        input.value = currentValue + 1;
+    }
+</script>
+@endpush
+
+@push('styles')
+<style>
+    .input-group .form-control {
+        text-align: center;
+    }
+    
+    .input-group .btn {
+        width: 40px;
+    }
+</style>
+@endpush
 @endsection

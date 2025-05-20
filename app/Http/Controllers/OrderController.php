@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Promotion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Services\DeliveryTimeService;
 
 class OrderController extends Controller
@@ -62,73 +63,104 @@ class OrderController extends Controller
             return redirect()->route('cart.index')->with('error', 'Ваша корзина пуста!');
         }
 
-        // Create the order
-        $order = Order::create([
-            'user_id' => Auth::id(),
-            'address' => $validated['address'],
-            'phone' => $validated['phone'],
-            'delivery_date' => $validated['delivery_date'],
-            'delivery_time_slot' => $validated['delivery_time_slot'],
-            'delivery_preferences' => $validated['delivery_preferences'],
-            'payment_method' => $validated['payment_method'],
-            'total_price' => $validated['total_price'],
-            'status' => 'new',
-            'order_date' => now()
-        ]);
-
-        // Process cart items and promotions
-        $activePromotions = Promotion::active()->with('categories')->get();
-        $totalPrice = 0;
-
+        // Проверяем доступность всех товаров
         foreach ($cart as $item) {
             $product = Product::find($item['id']);
-            if (!$product) {
-                continue;
+            if (!$product || !$product->isAvailable($item['quantity'])) {
+                return redirect()->route('cart.index')
+                    ->with('error', "Товар '{$product->name}' больше недоступен в запрошенном количестве.");
             }
+        }
 
-            // Check for applicable promotions
-            $appliedPromotion = null;
-            foreach ($activePromotions as $promo) {
-                if ($promo->categories->contains($product->category_id)) {
-                    $appliedPromotion = $promo;
-                    break;
-                }
-            }
+        try {
+            DB::beginTransaction();
 
-            // Calculate item price
-            if ($appliedPromotion) {
-                $discount = $appliedPromotion->discount;
-                $originalPrice = $item['price'];
-                $discountedPrice = $originalPrice * ((100 - $discount) / 100);
-            } else {
-                $discountedPrice = $item['price'];
-            }
-
-            // Create order item
-            $order->orderItems()->create([
-                'product_id' => $item['id'],
-                'quantity' => $item['quantity'],
-                'price' => $discountedPrice,
+            // Create the order
+            $order = Order::create([
+                'user_id' => Auth::id(),
+                'address' => $validated['address'],
+                'phone' => $validated['phone'],
+                'delivery_date' => $validated['delivery_date'],
+                'delivery_time_slot' => $validated['delivery_time_slot'],
+                'delivery_preferences' => $validated['delivery_preferences'],
+                'payment_method' => $validated['payment_method'],
+                'total_price' => $validated['total_price'],
+                'status' => 'new',
+                'order_date' => now()
             ]);
 
-            $totalPrice += $discountedPrice * $item['quantity'];
+            // Process cart items and promotions
+            $activePromotions = Promotion::active()->with('categories')->get();
+            $totalPrice = 0;
+
+            foreach ($cart as $item) {
+                $product = Product::find($item['id']);
+                
+                // Проверяем доступность товара еще раз (на случай, если кто-то другой уже заказал)
+                if (!$product->isAvailable($item['quantity'])) {
+                    DB::rollBack();
+                    return redirect()->route('cart.index')
+                        ->with('error', "Товар '{$product->name}' больше недоступен в запрошенном количестве.");
+                }
+
+                // Уменьшаем количество товара
+                if (!$product->decreaseQuantity($item['quantity'])) {
+                    DB::rollBack();
+                    return redirect()->route('cart.index')
+                        ->with('error', "Не удалось зарезервировать товар '{$product->name}'.");
+                }
+
+                // Check for applicable promotions
+                $appliedPromotion = null;
+                foreach ($activePromotions as $promo) {
+                    if ($promo->categories->contains($product->category_id)) {
+                        $appliedPromotion = $promo;
+                        break;
+                    }
+                }
+
+                // Calculate item price
+                if ($appliedPromotion) {
+                    $discount = $appliedPromotion->discount;
+                    $originalPrice = $item['price'];
+                    $discountedPrice = $originalPrice * ((100 - $discount) / 100);
+                } else {
+                    $discountedPrice = $item['price'];
+                }
+
+                // Create order item
+                $order->orderItems()->create([
+                    'product_id' => $item['id'],
+                    'quantity' => $item['quantity'],
+                    'price' => $discountedPrice,
+                ]);
+
+                $totalPrice += $discountedPrice * $item['quantity'];
+            }
+
+            // Update order with final total
+            $order->update([
+                'total_price' => $totalPrice
+            ]);
+
+            DB::commit();
+
+            // Clear the cart
+            session()->forget('cart');
+
+            // Redirect based on payment method
+            if ($validated['payment_method'] === 'card') {
+                return redirect()->route('card.payment.form', ['order_id' => $order->id])
+                    ->with('success', 'Заказ создан. Перейдите к оплате картой.');
+            }
+
+            return redirect()->route('orders.show', $order->id)
+                ->with('success', 'Заказ успешно создан. Оплата наличными при получении.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('cart.index')
+                ->with('error', 'Произошла ошибка при создании заказа. Пожалуйста, попробуйте позже.');
         }
-
-        // Update order with final total
-        $order->update([
-            'total_price' => $totalPrice
-        ]);
-
-        // Clear the cart
-        session()->forget('cart');
-
-        // Redirect based on payment method
-        if ($validated['payment_method'] === 'card') {
-            return redirect()->route('card.payment.form', ['order_id' => $order->id])
-                ->with('success', 'Заказ создан. Перейдите к оплате картой.');
-        }
-
-        return redirect()->route('orders.show', $order->id)
-            ->with('success', 'Заказ успешно создан. Оплата наличными при получении.');
     }
 }

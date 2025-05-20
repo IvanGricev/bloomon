@@ -42,6 +42,16 @@
             </select>
         </div>
 
+        <div class="mb-3">
+            <label for="quantity" class="form-label">Начальное количество</label>
+            <div class="input-group">
+                <input type="number" class="form-control" name="quantity" id="quantity" value="{{ old('quantity', 0) }}" min="0" required>
+                <button type="button" class="btn btn-outline-secondary" onclick="decreaseQuantity()">-</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="increaseQuantity()">+</button>
+            </div>
+            <small class="text-muted">Укажите начальное количество товара на складе</small>
+        </div>
+
         <!-- Поле для загрузки нескольких изображений -->
         <div class="mb-3">
              <label class="form-label">Изображения (можно выбрать несколько)</label>
@@ -51,4 +61,34 @@
         <button type="submit" class="btn btn-primary">Создать товар</button>
     </form>
 </div>
+
+@push('scripts')
+<script>
+    function decreaseQuantity() {
+        const input = document.getElementById('quantity');
+        const currentValue = parseInt(input.value);
+        if (currentValue > 0) {
+            input.value = currentValue - 1;
+        }
+    }
+    
+    function increaseQuantity() {
+        const input = document.getElementById('quantity');
+        const currentValue = parseInt(input.value);
+        input.value = currentValue + 1;
+    }
+</script>
+@endpush
+
+@push('styles')
+<style>
+    .input-group .form-control {
+        text-align: center;
+    }
+    
+    .input-group .btn {
+        width: 40px;
+    }
+</style>
+@endpush
 @endsection

@@ -39,6 +39,7 @@ class AdminProductController extends Controller
             'description'   => 'nullable|string',
             'price'         => 'required|numeric',
             'category_id'   => 'required|exists:categories,id',
+            'quantity'      => 'required|integer|min:0',
             'images'        => 'required', // Обязательное поле
             'images.*'      => 'image|max:2048', // Каждое изображение не больше 2 Мб
         ]);
@@ -49,6 +50,7 @@ class AdminProductController extends Controller
             'description'   => $validated['description'] ?? "",
             'price'         => $validated['price'],
             'category_id'   => $validated['category_id'],
+            'quantity'      => $validated['quantity'],
         ]);
 
         // Обработка множественной загрузки изображений:
@@ -91,6 +93,7 @@ class AdminProductController extends Controller
             'description'   => 'nullable|string',
             'price'         => 'required|numeric',
             'category_id'   => 'required|exists:categories,id',
+            'quantity'      => 'required|integer|min:0',
             // Поле для новых изображений (не обязательно)
             'new_images'    => 'nullable',
             'new_images.*'  => 'image|max:2048',
@@ -102,6 +105,7 @@ class AdminProductController extends Controller
             'description'   => $validated['description'] ?? "",
             'price'         => $validated['price'],
             'category_id'   => $validated['category_id'],
+            'quantity'      => $validated['quantity'],
         ]);
 
         // Если загружены новые изображения, сохраняем их:
@@ -155,5 +159,50 @@ class AdminProductController extends Controller
         $image->delete();
 
         return redirect()->back()->with('success', 'Изображение удалено.');
+    }
+
+    /**
+     * Обновление количества товара.
+     */
+    public function updateQuantity(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+        
+        $validated = $request->validate([
+            'quantity' => 'required|integer|min:0',
+        ]);
+
+        $product->update([
+            'quantity' => $validated['quantity']
+        ]);
+
+        return redirect()->back()->with('success', 'Количество товара обновлено.');
+    }
+
+    /**
+     * Быстрое обновление количества товара через AJAX.
+     */
+    public function quickUpdateQuantity(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+        
+        $validated = $request->validate([
+            'quantity' => 'required|integer|min:0',
+            'action' => 'required|in:set,add',
+        ]);
+
+        if ($validated['action'] === 'add') {
+            $product->quantity += $validated['quantity'];
+        } else {
+            $product->quantity = $validated['quantity'];
+        }
+
+        $product->save();
+
+        return response()->json([
+            'success' => true,
+            'new_quantity' => $product->quantity,
+            'message' => 'Количество товара обновлено'
+        ]);
     }
 }

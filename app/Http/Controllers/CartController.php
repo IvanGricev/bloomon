@@ -21,9 +21,18 @@ class CartController extends Controller
         // Проходимся по товарам корзины и переопределяем цены, если акция активна
         foreach ($cart as &$item) {
             $product = Product::find($item['id']);
+            
+            // Проверяем доступность товара
+            if (!$product->isAvailable($item['quantity'])) {
+                // Если товар больше недоступен, удаляем его из корзины
+                unset($cart[$item['id']]);
+                continue;
+            }
+            
             // Устанавливаем исходную цену товара из базы
             $item['original_price'] = $product->price;
             $item['applied_promotion'] = null;
+            $item['available_quantity'] = $product->quantity; // Добавляем информацию о доступном количестве
 
             foreach ($activePromotions as $promo) {
                 if ($promo->categories->contains($product->category_id)) {
@@ -41,6 +50,9 @@ class CartController extends Controller
         }
         unset($item);
 
+        // Сохраняем обновленную корзину
+        session()->put('cart', $cart);
+
         return view('cart.index', compact('cart'));
     }    
 
@@ -49,14 +61,24 @@ class CartController extends Controller
      */
     public function add(Request $request, $productId)
     {
-        // Получаем товар или выбрасываем 404, если не найден.
+        // Получаем товар или выбрасываем 404, если не найден
         $product = Product::findOrFail($productId);
         $quantity = $request->input('quantity', 1);
 
+        // Проверяем доступность товара
+        if (!$product->isAvailable($quantity)) {
+            return redirect()->back()->with('error', 'Запрошенное количество товара недоступно.');
+        }
+
         $cart = session()->get('cart', []);
-        // Если товар уже есть в корзине, увеличиваем количество.
+        
+        // Если товар уже есть в корзине, проверяем общее количество
         if (isset($cart[$productId])) {
-            $cart[$productId]['quantity'] += $quantity;
+            $totalQuantity = $cart[$productId]['quantity'] + $quantity;
+            if (!$product->isAvailable($totalQuantity)) {
+                return redirect()->back()->with('error', 'Общее количество товара в корзине превышает доступное.');
+            }
+            $cart[$productId]['quantity'] = $totalQuantity;
         } else {
             $cart[$productId] = [
                 'id'          => $product->id,
@@ -64,9 +86,11 @@ class CartController extends Controller
                 'price'       => $product->price,
                 'quantity'    => $quantity,
                 'photo'       => $product->photo,
-                'category_id' => $product->category_id, // Добавлено для расчёта скидок
+                'category_id' => $product->category_id,
+                'available_quantity' => $product->quantity,
             ];
         }
+        
         session()->put('cart', $cart);
         return redirect()->route('cart.index')->with('success', 'Товар добавлен в корзину.');
     }
@@ -81,7 +105,13 @@ class CartController extends Controller
         $action = $request->input('action');
     
         if (isset($cart[$productId])) {
+            $product = Product::find($productId);
+            
             if ($action === 'increment') {
+                // Проверяем доступность перед увеличением
+                if (!$product->isAvailable($cart[$productId]['quantity'] + 1)) {
+                    return redirect()->back()->with('error', 'Запрошенное количество товара недоступно.');
+                }
                 $cart[$productId]['quantity']++;
             } elseif ($action === 'decrement') {
                 $cart[$productId]['quantity']--;
@@ -90,7 +120,13 @@ class CartController extends Controller
                     unset($cart[$productId]);
                 }
             }
+            
+            // Обновляем информацию о доступном количестве
+            if (isset($cart[$productId])) {
+                $cart[$productId]['available_quantity'] = $product->quantity;
+            }
         }
+        
         session()->put('cart', $cart);
         return redirect()->route('cart.index')->with('success', 'Корзина обновлена.');
     }
@@ -125,8 +161,17 @@ class CartController extends Controller
         foreach ($cart as &$item) {
             // Получаем обновлённые данные товара
             $product = Product::find($item['id']);
+            
+            // Проверяем доступность товара
+            if (!$product->isAvailable($item['quantity'])) {
+                return redirect()->route('cart.index')
+                    ->with('error', "Товар '{$product->name}' больше недоступен в запрошенном количестве.");
+            }
+            
             $item['original_price'] = $product->price;
             $item['applied_promotion'] = null;
+            $item['available_quantity'] = $product->quantity;
+            
             foreach ($activePromotions as $promo) {
                 if (isset($item['category_id']) && $promo->categories->contains($item['category_id'])) {
                     $item['applied_promotion'] = $promo->name;

@@ -129,8 +129,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/orders/{id}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
 
     // Управление товарами
-    Route::resource('products', AdminProductController::class);
-    Route::delete('products/{product}/images/{image}', [AdminProductController::class, 'destroyImage'])->name('products.image.destroy');
+    Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
+    Route::get('/products/create', [AdminProductController::class, 'create'])->name('products.create');
+    Route::post('/products', [AdminProductController::class, 'store'])->name('products.store');
+    Route::get('/products/{id}/edit', [AdminProductController::class, 'edit'])->name('products.edit');
+    Route::put('/products/{id}', [AdminProductController::class, 'update'])->name('products.update');
+    Route::delete('/products/{id}', [AdminProductController::class, 'destroy'])->name('products.destroy');
+    Route::delete('/products/{product}/image/{image}', [AdminProductController::class, 'destroyImage'])->name('products.image.destroy');
+    Route::post('/products/{id}/quantity', [AdminProductController::class, 'quickUpdateQuantity'])->name('products.quantity.update');
 
     // Управление пользователями
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');

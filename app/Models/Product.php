@@ -15,6 +15,7 @@ class Product extends Model
         'price',
         'category_id',
         'photo',
+        'quantity',
     ];
 
     // Отношение к категории
@@ -38,5 +39,29 @@ class Product extends Model
     public function images()
     {
         return $this->hasMany(\App\Models\ProductImage::class);
+    }
+
+    // Проверка доступности товара
+    public function isAvailable(int $requestedQuantity = 1): bool
+    {
+        return $this->quantity >= $requestedQuantity;
+    }
+
+    // Уменьшение количества товара
+    public function decreaseQuantity(int $quantity = 1): bool
+    {
+        if (!$this->isAvailable($quantity)) {
+            return false;
+        }
+
+        $this->quantity -= $quantity;
+        return $this->save();
+    }
+
+    // Увеличение количества товара
+    public function increaseQuantity(int $quantity = 1): bool
+    {
+        $this->quantity += $quantity;
+        return $this->save();
     }
 }
