@@ -1,7 +1,10 @@
+<link rel="stylesheet" href="/css/nav.css">
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container">
     <!-- Логотип/Бренд -->
-    <a class="navbar-brand" href="{{ route('home') }}">Bloomon</a>
+    <a class="navbar-brand" href="{{ route('home') }}">
+      <img src="{{ asset('images/logo.svg') }}" alt="Bloomon" class="navbar-brand__logo">
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" 
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -9,7 +12,7 @@
     
     <!-- Основное меню -->
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <ul class="navbar-nav">
         <li class="nav-item">
           <a class="nav-link" href="{{ route('products.index') }}">Каталог</a>
         </li>
@@ -28,19 +31,19 @@
       </ul>
       
       <!-- Правая часть меню -->
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-        @auth
+      <ul class="navbar-nav">
+        @auth 
           <!-- Ссылка на Корзину -->
           <li class="nav-item">
             <a class="nav-link" href="{{ route('cart.index') }}">
-              <i class="bi bi-cart"></i> Корзина
+              <img src="{{ asset('images/cart.svg') }}" alt="Корзина" style="width:26px;height:26px;vertical-align:middle;margin-right:6px;">
             </a>
           </li>
           <!-- Выпадающее меню пользователя -->
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                data-bs-toggle="dropdown" aria-expanded="false">
-              {{ auth()->user()->name }} <i class="bi bi-caret-down-fill"></i>
+              <img src="{{ asset('images/account.svg') }}" alt="Аккаунт" style="width:26px;height:26px;vertical-align:middle;margin-right:6px;">
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
               <li>
