@@ -21,8 +21,8 @@
     </main>
 
     <!-- Подвал сайта -->
-    <footer class="text-center py-4">
-        <p>&copy; 2025 Bloomon. Все права защищены.</p>
+    <footer>
+        @include('partials.footer')
     </footer>
 
     <!-- Подключение скриптов -->
