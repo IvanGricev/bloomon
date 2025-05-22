@@ -1,6 +1,22 @@
+
 @extends('main')
 
 @section('content')
+<link rel="stylesheet" href="{{ url('css/home.css') }}">
+<div class="main-banner">
+    <div class="main-banner__text">
+        <div class="main-banner__subtitle">Каждый день -<br>это шанс</div>
+        <div class="main-banner__title">расцвести</div>
+        <div class="main-banner__desc">
+            Мы верим, что каждый букет - это не просто сбор лепестков, а возможность передать самые искренние эмоции и создать незабываемые моменты. Наши профессиональные флористы с любовью подбирают каждую деталь, чтобы ваш подарок стал по-настоящему особенным.
+        </div>
+        <a href="{{ route('products.index') }}" class="main-banner__btn">ПЕРЕЙТИ В КАТАЛОГ <span>&#8599;</span></a>
+    </div>
+    <div class="main-banner__img">
+        <img src="{{ asset('images/banner.png') }}" alt="Букет цветов">
+    </div>
+</div>
+
 <div class="text-center my-5">
     <h1>Добро пожаловать в Bloomon</h1>
     <p>Лучшие букеты для любого случая.</p>

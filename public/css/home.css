@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+/* @font-face для Kudry добавьте сюда, если есть файл шрифта */
+
+.main-banner {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background: #fff;
+    min-height: 500px;
+    gap: 0px;
+    margin-top: 80px;
+}
+
+.main-banner__text {
+    max-width: 600px;
+    z-index: 2;
+}
+
+.main-banner__subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 2.0rem;
+    margin-bottom: -0.9em;
+    color: #222;
+}
+
+.main-banner__title {
+    font-family: 'Kudry', serif;
+    font-size: 6rem;
+    color: #D3725F;
+    margin-bottom: 0.5em;
+    line-height: 1;
+}
+
+.main-banner__desc {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 2em;
+}
+
+.main-banner__btn {
+    display: inline-block;
+    padding: 16px 48px;
+    border: 1px solid #888;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.1rem;
+    color: #222;
+    background: #fff;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+    border-radius: 2px;
+}
+.main-banner__btn:hover {
+    background: #D3725F;
+    color: #fff;
+    border-color: #D3725F;
+}
+
+.main-banner__img {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100%;
+    margin-right: -9vw; /* чтобы картинка выходила за пределы блока */
+}
+
+.main-banner__img img {
+    width: 100%;
+    max-width: none;
+    height: auto;
+    object-fit: cover;
+    display: block;
+}
