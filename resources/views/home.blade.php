@@ -1,4 +1,3 @@
-
 @extends('main')
 
 @section('content')
@@ -17,82 +16,83 @@
     </div>
 </div>
 
-<div class="text-center my-5">
-    <h1>Добро пожаловать в Bloomon</h1>
-    <p>Лучшие букеты для любого случая.</p>
-</div>
+@php
+    $promoImages = [
+        asset('images/promo1.jpg'),
+        asset('images/promo2.jpg'),
+        asset('images/promo3.jpg'),
+        asset('images/promo4.jpg'),
+    ];
+@endphp
 
-<div class="container my-5">
-    <!-- Вывод акций -->
-    <h2 class="text-center mb-4">Текущие акции</h2>
-    <div class="row">
-        @foreach($promotions as $promo)
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">{{ $promo->name }}</h5>
-                        <p class="card-text">{{ $promo->description }}</p>
-                        <p class="card-text"><strong>{{ $promo->discount }}%</strong> скидка</p>
-                    </div>
+<div class="promos-section">
+    <h2 class="promos-title">Акции</h2>
+    <div class="promos-grid">
+        @foreach($promotions as $i => $promo)
+            <div class="promo-card promo-card--{{ $i+1 }}">
+                <img src="{{ $promoImages[$i] ?? $promoImages[0] }}" alt="{{ $promo->name }}">
+                <div class="promo-card__overlay"></div>
+                <div class="promo-card__content">
+                    <div class="promo-card__name">{{ $promo->name }}</div>
+                    <div class="promo-card__discount">{{ $promo->discount }}%<span> скидка</span></div>
                 </div>
             </div>
         @endforeach
     </div>
 </div>
 
-<div class="container my-5">
-    <!-- Вывод 3 подписок -->
-    <h2 class="text-center mb-4">Популярные подписки</h2>
-    <div class="row">
+<div class="subscriptions-section">
+    <h2 class="subscriptions-title">Популярные подписки</h2>
+    <div class="subscriptions-grid">
         @foreach($subscriptions as $subscription)
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">{{ $subscription->name }}</h5>
-                        <p class="card-text">{{ $subscription->description }}</p>
-                        <p class="card-text">
-                            <strong>{{ number_format($subscription->price, 2, ',', ' ') }} руб.</strong><br>
-                            {{ ucfirst($subscription->period) }} подписка, доставка: {{ $subscription->frequency }}
-                        </p>
+            <div class="subscription-card">
+                <div class="subscription-card__body">
+                    <div class="subscription-card__name">{{ $subscription->name }}</div>
+                    <div class="subscription-card__desc">{{ $subscription->description }}</div>
+                    <div class="subscription-card__price">
+                        <strong>{{ number_format($subscription->price, 2, ',', ' ') }} руб.</strong>
+                    </div>
+                    <div class="subscription-card__meta">
+                        {{ ucfirst($subscription->period) }} подписка, доставка: {{ $subscription->frequency }}
                     </div>
                 </div>
             </div>
         @endforeach
     </div>
-    <div class="text-center">
-        <a href="{{ route('subscriptions.index') }}" class="btn btn-primary">Смотреть все подписки</a>
+    <div class="subscriptions-btn-wrap">
+        <a href="{{ route('subscriptions.index') }}" class="subscriptions-btn">Смотреть все подписки</a>
     </div>
 </div>
 
-<div class="container my-5">
-    <!-- Мини блог -->
-    <h2 class="text-center mb-4">Блог Bloomon</h2>
-    <div class="row">
-        @foreach($blogPosts as $post)
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    @if($post->image)
-                        <img src="{{ asset('uploads/blog/' . $post->image) }}" class="card-img-top" alt="{{ $post->title }}">
-                    @else
-                        <img src="https://via.placeholder.com/350x200?text=No+Image" class="card-img-top" alt="{{ $post->title }}">
-                    @endif
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $post->title }}</h5>
-                        <p class="card-text">{{ Str::limit($post->body, 100) }}</p>
-                    </div>
+<div class="blog-section">
+    <div class="blog-header">
+        <h2 class="blog-title">Блог</h2>
+        <a href="{{ route('ideas') }}" class="blog-more-link">Смотреть все <span>&#8594;</span></a>
+    </div>
+    <div class="blog-grid">
+        @foreach($blogPosts->take(2) as $post)
+            <div class="blog-card">
+                <div class="blog-card__img">
+                    <img src="{{ $post->image ? asset('uploads/blog/' . $post->image) : 'https://via.placeholder.com/600x400?text=No+Image' }}" alt="{{ $post->title }}">
                 </div>
+                <div class="blog-card__title">{{ mb_strtoupper($post->title) }}</div>
             </div>
         @endforeach
     </div>
-    @auth
-        @if(auth()->user()->role === 'admin')
-            <div class="text-center">
-                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addBlogModal">
-                    Добавить запись в блог
-                </button>
-            </div>
-        @endif
-    @endauth
+</div>
+
+<div class="delivery-section">
+    <div class="delivery-header">
+        <h2 class="delivery-title">Доставка</h2>
+        <a href="{{ route('delivery') }}" class="delivery-more-link">Узнать подробнее <span>&#8594;</span></a>
+    </div>
+    <div class="delivery-card">
+        <img src="{{ asset('images/delivery.jpg') }}" alt="Доставка цветов">
+        <div class="delivery-card__desc">
+            <strong>БЫСТРАЯ И БЕРЕЖНАЯ ДОСТАВКА ПО ГОРОДУ И ОБЛАСТИ.</strong><br>
+            Мы доставим ваш букет в течение 2 часов после оформления заказа или в удобное для вас время. Наши курьеры заботятся о каждом букете, чтобы он приехал к вам свежим и красивым.
+        </div>
+    </div>
 </div>
 
 <!-- Модальное окно для добавления записи блога (для администратора) -->
