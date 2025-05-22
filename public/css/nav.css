@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    background: rgba(187, 168, 169, 0.2) !important; /* #BBA8A9, 20% */
+    backdrop-filter: blur(13px);
+    -webkit-backdrop-filter: blur(13px);
+    box-shadow: 0 2px 16px 0 rgba(0,0,0,0.03);
+    font-family: 'Montserrat', sans-serif;
+    transition: background 0.2s;
+}
+
+/* Лого через svg */
+.navbar .navbar-brand::before {
+    content: '';
+    display: inline-block;
+    width: 38px;
+    height: 38px;
+    margin-right: 0px;
+    vertical-align: middle;
+}
+
+.navbar-nav .nav-link {
+    color: #222 !important;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.08rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+    padding: 0px 0;
+    position: relative;
+    
+}
+.navbar-nav .nav-link:hover {
+    color: #d97c6a !important;
+}
+
+/* Иконка корзины */
+.bi-cart::before {
+    content: '';
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    vertical-align: middle;
+    margin-right: 6px;
+}
+
+/* Иконка аккаунта (заменяет caret на svg) */
+.bi-caret-down-fill {
+    display: none;
+}
+.navbar-nav .dropdown-toggle::after {
+    content: '';
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    vertical-align: middle;
+    margin-left: 6px;
+}
+
+/* Кнопки входа/регистрации */
+.btn-primary, .btn-outline-primary {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    border-radius: 2px;
+}
+
+/* Центрируем меню */
+.navbar .navbar-collapse {
+    justify-content: center !important;
+}
+.navbar-nav {
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 150px;
+}
+
+/* Убираем стрелку возле профиля */
+.navbar-nav .dropdown-toggle::after {
+    display: none !important;
+}
+
+.navbar .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 40px;
+    padding-right: 40px;
+    width: 100%;
+    min-height: 80px;
+}
