@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+.site-footer {
+    background: #f8f4f4;
+    padding: 48px 0 0 0;
+    font-family: 'Montserrat', sans-serif;
+    color: #222;
+    margin-top: 120px;
+}
+.footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    gap: 24px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    padding: 0 2vw;
+}
+.footer-col {
+    min-width: 120px;
+    max-width: 180px;
+    flex: 1 1 120px;
+    margin-bottom: 32px;
+}
+.footer-col:first-child {
+    margin-right: auto;
+}
+.footer-logo img {
+    height: 36px;
+    width: auto;
+    margin-bottom: 12px;
+}
+
+.footer-desc {
+    font-size: 1rem;
+    color: #888;
+    margin-bottom: 18px;
+    max-width: 340px; /* увеличено */
+}
+.footer-col h5 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #d97c6a;
+    margin-bottom: 14px;
+    letter-spacing: 0.03em;
+}
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin-left: 0;
+}
+.footer-col ul li {
+    margin-bottom: 10px;
+}
+.footer-col ul li a {
+    color: #222;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.2s;
+}
+.footer-col ul li a:hover {
+    color: #d97c6a;
+}
+
+.footer-bottom {
+    text-align: center;
+    color: #aaa;
+    font-size: 0.98rem;
+    padding: 24px 0 18px 0;
+    border-top: 1px solid #ececec;
+    margin-top: 18px;
+}
+@media (max-width: 900px) {
+    .footer-container {
+        flex-direction: column;
+        gap: 18px;
+        align-items: flex-start;
+    }
+    .footer-col {
+        margin-bottom: 18px;
+    }
+}
