@@ -85,9 +85,12 @@ body {
     transition: border 0.2s;
 }
 .categories-dropdown .dropdown-toggle:focus,
-.categories-dropdown .dropdown-toggle:hover {
+.categories-dropdown .dropdown-toggle:hover,
+.categories-dropdown .dropdown-toggle:active,
+.categories-dropdown .dropdown-toggle.show {
     border-color: #d97c6a;
     color: #d97c6a;
+    background: #fff;
 }
 .categories-dropdown .dropdown-menu {
     border-radius: 12px;
@@ -142,7 +145,6 @@ body {
     margin-top: 0;
 }
 .catalog-sort {
-    
     display: flex;
     align-items: center;
     gap: 0.8em;
