@@ -98,3 +98,43 @@
     width: 100%;
     min-height: 80px;
 }
+/* Login and Registration Buttons */
+.navbar .btn {
+    padding: 8px 20px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 0px;
+    transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.navbar .btn-outline-primary {
+    color: #d97c6a;
+    border: 2px solid #d97c6a;
+    background: transparent;
+}
+
+.navbar .btn-outline-primary:hover {
+    background: #d97c6a;
+    color: white;
+    border-color: #d97c6a;
+}
+
+.navbar .btn-primary {
+    background: #d97c6a;
+    border: 2px solid #d97c6a;
+    color: white;
+}
+
+.navbar .btn-primary:hover {
+    background: #c56b5a;
+    border-color: #c56b5a;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .navbar .btn {
+        padding: 6px 16px;
+        font-size: 0.9rem;
+    }
+} 

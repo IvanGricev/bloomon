@@ -81,36 +81,6 @@
     </div>
 </div>
 
-@push('styles')
-<style>
-    .search-filter-block {
-        background: #f8f9fa;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .categories-filter {
-        background: white;
-        padding: 15px;
-        border-radius: 6px;
-        border: 1px solid #dee2e6;
-    }
-    
-    .categories-list {
-        max-height: 200px;
-        overflow-y: auto;
-    }
-    
-    .form-check {
-        margin-bottom: 8px;
-    }
-    
-    .form-check-label {
-        cursor: pointer;
-    }
-</style>
-@endpush
 
 @push('scripts')
 <script>
