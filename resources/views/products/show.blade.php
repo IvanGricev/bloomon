@@ -1,107 +1,102 @@
 @extends('main')
 
 @section('content')
-<div class="container my-5">
-    <div class="row">
+<link rel="stylesheet" href="{{ url('css/product.css') }}">
+<div class="product-container">
+    <div class="product-breadcrumbs">
+        <a href="/">Главная</a> <span>/</span> <a href="{{ route('products.index') }}">Каталог</a> <span>/</span> <span>{{ $product->name }}</span>
+    </div>
+    <div class="product-row">
         <!-- Левая колонка: Изображения товара -->
-        <div class="col-md-6">
+        <div class="product-image-block">
             @if($product->images->isNotEmpty())
-                <div id="carouselProduct{{ $product->id }}" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        @foreach($product->images as $key => $image)
-                            <div class="carousel-item @if($key == 0) active @endif">
-                                <img src="{{ asset('uploads/products/' . $image->image_path) }}" class="d-block w-100" alt="{{ $product->name }}">
-                            </div>
-                        @endforeach
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselProduct{{ $product->id }}" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Предыдущий</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselProduct{{ $product->id }}" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Следующий</span>
-                    </button>
-                </div>
+                <img src="{{ asset('uploads/products/' . $product->images->first()->image_path) }}" class="product-image" alt="{{ $product->name }}">
             @else
-                <img src="https://via.placeholder.com/600x400" class="img-fluid" alt="{{ $product->name }}">
+                <div class="product-image" style="background: #ddd;"></div>
             @endif
         </div>
-        
         <!-- Правая колонка: Информация о товаре и форма заказа -->
-        <div class="col-md-6">
-            <h1>{{ $product->name }}</h1>
-            <h2>{{ number_format($product->price, 2, ',', ' ') }} руб.</h2>
-            <p>{{ $product->description }}</p>
-            
-            <!-- Информация о наличии -->
-            <div class="availability-info mb-3">
+        <div class="product-info-block">
+            <div class="product-title">{{ $product->name }}</div>
+            <div class="product-price-row">
+                <span class="product-price">{{ number_format($product->price, 2, ',', ' ') }} руб.</span>
+                @if(isset($product->old_price) && $product->old_price > $product->price)
+                    <span class="product-old-price">{{ number_format($product->old_price, 2, ',', ' ') }} руб.</span>
+                @endif
+            </div>
+            <div class="product-description">{{ $product->description }}</div>
+            <div class="product-availability">
                 @if($product->quantity > 0)
                     @if($product->quantity <= 25)
                         <div class="alert alert-warning">
-                            <i class="fas fa-exclamation-triangle"></i>
                             Осталось всего {{ $product->quantity }} {{ trans_choice('товар|товара|товаров', $product->quantity) }}
                         </div>
                     @else
                         <div class="alert alert-success">
-                            <i class="fas fa-check-circle"></i>
                             В наличии
                         </div>
                     @endif
                 @else
                     <div class="alert alert-danger">
-                        <i class="fas fa-times-circle"></i>
                         Нет в наличии
                     </div>
                 @endif
             </div>
-            
-            <!-- Форма заказа -->
             <div class="mt-4">
                 @if($product->quantity > 0)
                     <form action="{{ route('cart.add', $product->id) }}" method="POST" id="addToCartForm">
                         @csrf
                         <div class="mb-3">
-                            <label for="quantity" class="form-label">Количество</label>
-                            <div class="input-group" style="width: 150px;">
-                                <button type="button" class="btn btn-outline-secondary" onclick="decreaseQuantity()">-</button>
-                                <input type="number" 
-                                       name="quantity" 
-                                       id="quantity" 
-                                       value="1" 
-                                       min="1" 
-                                       max="{{ $product->quantity }}" 
-                                       class="form-control text-center"
-                                       onchange="validateQuantity(this.value)">
-                                <button type="button" class="btn btn-outline-secondary" onclick="increaseQuantity()">+</button>
+                            <div class="product-qty-label">Количество</div>
+                            <div class="product-qty-group">
+                                <button type="button" class="product-qty-btn" onclick="decreaseQuantity()">-</button>
+                                <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ $product->quantity }}" class="product-qty-input" onchange="validateQuantity(this.value)">
+                                <button type="button" class="product-qty-btn" onclick="increaseQuantity()">+</button>
                             </div>
                             <small class="text-muted">Доступно: {{ $product->quantity }} {{ trans_choice('единица|единицы|единиц', $product->quantity) }}</small>
                         </div>
-                        <button type="submit" class="btn btn-primary">Добавить в корзину</button>
+                        <button type="submit" class="product-cart-btn">Добавить в корзину</button>
                     </form>
                 @else
-                    <button class="btn btn-secondary" disabled>Нет в наличии</button>
+                    <button class="product-cart-btn" disabled>Нет в наличии</button>
                 @endif
             </div>
         </div>
     </div>
+    {{-- Рандомные товары --}}
+    @php
+        $randomProducts = \App\Models\Product::where('id', '!=', $product->id)->inRandomOrder()->limit(4)->get();
+    @endphp
+    @if($randomProducts->count())
+        <div class="related-products-section">
+            <div class="related-products-title">Товары</div>
+            <div class="related-products-row">
+                @foreach($randomProducts as $item)
+                    <a href="{{ route('products.show', $item->id) }}" class="related-product-card">
+                        <div class="related-product-image" style="background-image: url('{{ $item->images->isNotEmpty() ? asset('uploads/products/' . $item->images->first()->image_path) : 'https://via.placeholder.com/300x200' }}');"></div>
+                        <div class="related-product-info">
+                            <div class="related-product-name"><b>{{ $item->name }}</b></div>
+                            <div class="related-product-price">{{ number_format($item->price, 2, ',', ' ') }} руб.</div>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    @endif
 </div>
 
 @push('scripts')
 <script>
     const maxQuantity = {{ $product->quantity }};
-    
     function validateQuantity(value) {
         const input = document.getElementById('quantity');
         value = parseInt(value);
-        
         if (isNaN(value) || value < 1) {
             input.value = 1;
         } else if (value > maxQuantity) {
             input.value = maxQuantity;
         }
     }
-    
     function decreaseQuantity() {
         const input = document.getElementById('quantity');
         const currentValue = parseInt(input.value);
@@ -109,7 +104,6 @@
             input.value = currentValue - 1;
         }
     }
-    
     function increaseQuantity() {
         const input = document.getElementById('quantity');
         const currentValue = parseInt(input.value);
@@ -117,9 +111,7 @@
             input.value = currentValue + 1;
         }
     }
-    
-    // Валидация формы перед отправкой
-    document.getElementById('addToCartForm').addEventListener('submit', function(e) {
+    document.getElementById('addToCartForm')?.addEventListener('submit', function(e) {
         const quantity = parseInt(document.getElementById('quantity').value);
         if (quantity > maxQuantity) {
             e.preventDefault();
@@ -127,21 +119,5 @@
         }
     });
 </script>
-@endpush
-
-@push('styles')
-<style>
-    .availability-info .alert {
-        margin-bottom: 0;
-    }
-    
-    .input-group .form-control {
-        text-align: center;
-    }
-    
-    .input-group .btn {
-        width: 40px;
-    }
-</style>
 @endpush
 @endsection
