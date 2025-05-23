@@ -3,6 +3,23 @@
 
 @section('content')
 <div class="container my-5">
+    <div class="catalog-header d-flex justify-content-between align-items-start mb-2" style="gap: 24px;">
+        <div>
+            <div class="catalog-breadcrumbs mb-1">
+                <span>Главная</span> / <span>Каталог</span>
+            </div>
+        </div>
+        <div class="catalog-sort">
+            <span class="sort-label">Сортировать по:</span>
+            <a href="#" class="sort-link active">ЦЕНЕ</a>
+            <span class="sort-divider">|</span>
+            <a href="#" class="sort-link">РЕЙТИНГУ</a>
+            <span class="sort-divider">|</span>
+            <a href="#" class="sort-link">НОВИНКЕ</a>
+        </div>
+    </div>
+    <h1 class="catalog-title mb-4">Каталог</h1>
+
     <!-- Блок поиска и фильтров -->
     <div class="search-filter-block mb-5">
         <form action="{{ route('products.index') }}" method="GET" class="search-form">
@@ -12,53 +29,79 @@
                     <div class="input-group">
                         <input type="text" 
                                name="search" 
-                               class="form-control" 
+                               class="form-control search-input" 
                                placeholder="Поиск по названию или категории..." 
                                value="{{ request('search') }}"
                         >
-                        <button class="btn btn-primary" type="submit">
+                        <button class=" search-btn" type="submit">
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
                 </div>
                 
                 <!-- Фильтр категорий -->
-                <div class="col-md-6">
-                    <div class="categories-filter">
-                        <h5 class="mb-3">Категории</h5>
-                        <div class="categories-list" id="categoriesList">
-                            @foreach($categories->take(10) as $category)
-                                <div class="form-check">
-                                    <input class="form-check-input" 
-                                           type="checkbox" 
-                                           name="categories[]" 
-                                           value="{{ $category->id }}"
-                                           id="category{{ $category->id }}"
-                                           {{ in_array($category->id, request('categories', [])) ? 'checked' : '' }}
+                <div class="col-md-6 d-flex gap-3">
+                    <!-- Категории -->
+                    <div class="dropdown categories-dropdown flex-grow-1">
+                        <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="categoriesDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                            Категории
+                        </button>
+                        <div class="dropdown-menu p-3 w-100" aria-labelledby="categoriesDropdownBtn" style="min-width: 260px;">
+                            <form method="GET" action="{{ route('products.index') }}">
+                                <div class="categories-list mb-3">
+                                    @foreach($categories as $category)
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   name="categories[]"
+                                                   value="{{ $category->id }}"
+                                                   id="category{{ $category->id }}"
+                                                   {{ in_array($category->id, request('categories', [])) ? 'checked' : '' }}
+                                            >
+                                            <label class="form-check-label" for="category{{ $category->id }}">
+                                                {{ $category->name }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                @if(request('in_stock'))
+                                    <input type="hidden" name="in_stock" value="1">
+                                @endif
+                                <button type="submit" class="btn btn-primary w-100">Применить</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Наличие -->
+                    <div class="dropdown categories-dropdown flex-grow-1">
+                        <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="stockDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                            Наличие
+                        </button>
+                        <div class="dropdown-menu p-3 w-100" aria-labelledby="stockDropdownBtn" style="min-width: 180px;">
+                            <form method="GET" action="{{ route('products.index') }}">
+                                @foreach(request('categories', []) as $cat)
+                                    <input type="hidden" name="categories[]" value="{{ $cat }}">
+                                @endforeach
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="in_stock"
+                                           value="1"
+                                           id="inStockCheck"
+                                           {{ request('in_stock') ? 'checked' : '' }}
                                     >
-                                    <label class="form-check-label" for="category{{ $category->id }}">
-                                        {{ $category->name }}
+                                    <label class="form-check-label" for="inStockCheck">
+                                        Только в наличии
                                     </label>
                                 </div>
-                            @endforeach
+                                <button type="submit" class="btn btn-primary w-100">Применить</button>
+                            </form>
                         </div>
-                        
-                        @if($categories->count() > 10)
-                            <button type="button" 
-                                    class="btn btn-link p-0 mt-2" 
-                                    id="showMoreCategories"
-                                    onclick="toggleCategories()"
-                            >
-                                Больше категорий
-                            </button>
-                        @endif
                     </div>
                 </div>
             </div>
         </form>
     </div>
 
-    <h1>Каталог товаров</h1>
     <div class="row">
         @forelse($products as $product)
             <div class="col-md-4 mb-4">
