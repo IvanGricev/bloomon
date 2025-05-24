@@ -1,0 +1,278 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: #fff;
+    color: #222;
+    margin: 0;
+    padding: 0;
+}
+.delivery-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 48px;
+    max-width: 1300px;
+    margin: 0 auto 60px auto;
+    padding: 60px 0 0 0;
+}
+.delivery-hero-text {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2em;
+}
+.delivery-hero-title {
+    font-family: 'Kudry', 'Montserrat', serif;
+    font-size: 3.7rem;
+    color: #d97c6a;
+    font-weight: 500;
+    margin-bottom: -0.5em;
+}
+.delivery-hero-desc {
+    font-size: 1.18rem;
+    color: #222;
+    line-height: 1.5;
+    margin-bottom: 1.9em;
+}
+.delivery-hero-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8em;
+}
+.delivery-hero-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7em;
+    font-size: 1.05rem;
+    color: #444;
+}
+.delivery-hero-list svg {
+    width: 1.3em;
+    height: 1.3em;
+    flex-shrink: 0;
+    fill: #d97c6a;
+    margin-top: 2px;
+}
+.delivery-hero-img {
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 320px;
+    max-width: 520px;
+}
+.delivery-hero-img img {
+    width: 100%;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(217,124,106,0.13);
+    object-fit: cover;
+    transition: transform 0.4s cubic-bezier(.4,1.4,.6,1), box-shadow 0.3s;
+    display: block;
+}
+.delivery-hero-img img:hover {
+    transform: scale(1.035) rotate(-1deg);
+    box-shadow: 0 16px 48px rgba(217,124,106,0.18);
+}
+
+.delivery-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 32px;
+    max-width: 1400px;
+    margin: 150px auto 60px auto;
+    position: relative;
+    padding: 0;
+}
+.delivery-card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 32px rgba(217,124,106,0.10);
+    border: 2.5px solid #f7b6a3;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    min-width: 320px;
+    max-width: 420px;
+    flex: 1 1 320px;
+    padding: 32px 28px 28px 28px;
+    transition: box-shadow 0.25s, border 0.25s, transform 0.25s;
+    position: relative;
+    text-align: left;
+}
+.delivery-card:hover {
+    box-shadow: 0 8px 48px rgba(217,124,106,0.18);
+    border-color: #d97c6a;
+    transform: translateY(-4px) scale(1.03);
+}
+.delivery-card-icon {
+    width: 54px;
+    height: 54px;
+    min-width: 54px;
+    min-height: 54px;
+    border-radius: 50%;
+    background: #f7b6a3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0;
+    margin-bottom: 0;
+    box-shadow: 0 2px 12px rgba(217,124,106,0.10);
+}
+.delivery-card-icon svg {
+    width: 28px;
+    height: 28px;
+    fill: #fff;
+    display: block;
+}
+.delivery-card-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.13rem;
+    font-weight: 700;
+    color: #d97c6a;
+    margin-bottom: 0.2em;
+    margin-top: 0;
+}
+.delivery-card-desc {
+    font-size: 1.01rem;
+    color: #444;
+    line-height: 1.4;
+    margin: 0;
+}
+.delivery-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+}
+@media (max-width: 1100px) {
+    .delivery-cards {
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+    }
+    .delivery-card {
+        max-width: 100%;
+        min-width: 0;
+        width: 100%;
+        padding: 22px 14px 18px 14px;
+    }
+}
+
+.delivery-benefits {
+    max-width: 1400px;
+    margin: 0 auto 60px auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: center;
+}
+.delivery-benefit {
+    background: #f7b6a3;
+    color: #fff;
+    border-radius: 14px;
+    padding: 24px 32px;
+    font-size: 1.13rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    box-shadow: 0 2px 12px rgba(217,124,106,0.10);
+    min-width: 220px;
+    text-align: center;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+.delivery-benefit:hover {
+    background: #d97c6a;
+    box-shadow: 0 6px 24px rgba(217,124,106,0.18);
+}
+@media (max-width: 700px) {
+    .delivery-hero-title {
+        font-size: 1.5rem;
+    }
+    .delivery-hero-desc {
+        font-size: 1.01rem;
+    }
+    .delivery-hero {
+        padding: 18px 0 0 0;
+    }
+    .delivery-hero-img img {
+        max-width: 98vw;
+    }
+    .delivery-cards {
+        gap: 10px;
+    }
+    .delivery-benefit {
+        font-size: 1rem;
+        padding: 14px 10px;
+    }
+}
+
+.delivery-steps {
+    max-width: 1400px;
+    margin: 0 auto 60px auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    justify-items: center;
+}
+.delivery-step {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 32px rgba(217,124,106,0.10);
+    padding: 32px 22px 28px 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: box-shadow 0.25s, transform 0.25s;
+    min-width: 0;
+    text-align: center;
+}
+.delivery-step:hover {
+    box-shadow: 0 8px 48px rgba(217,124,106,0.18);
+    transform: translateY(-6px) scale(1.03);
+}
+.delivery-step-num {
+    font-family: 'Kudry', 'Montserrat', serif;
+    font-size: 2.7rem;
+    color: #d97c6a;
+    font-weight: 500;
+    margin-bottom: 0.2em;
+    line-height: 1;
+}
+.delivery-step-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.18rem;
+    font-weight: 700;
+    color: #d97c6a;
+    margin-bottom: 0.3em;
+}
+.delivery-step-desc {
+    font-size: 1.05rem;
+    color: #444;
+    line-height: 1.4;
+}
+@media (max-width: 1100px) {
+    .delivery-steps {
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+    }
+}
+@media (max-width: 700px) {
+    .delivery-steps {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .delivery-step {
+        padding: 18px 10px 16px 10px;
+    }
+    .delivery-step-num {
+        font-size: 1.5rem;
+    }
+    .delivery-step-title {
+        font-size: 1rem;
+    }
+    .delivery-step-desc {
+        font-size: 0.98rem;
+    }
+} 
