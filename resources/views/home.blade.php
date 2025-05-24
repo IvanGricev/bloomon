@@ -64,23 +64,6 @@
     </div>
 </div>
 
-<div class="blog-section">
-    <div class="blog-header">
-        <h2 class="blog-title">Блог</h2>
-        <a href="{{ route('ideas') }}" class="blog-more-link">Смотреть все <span>&#8594;</span></a>
-    </div>
-    <div class="blog-grid">
-        @foreach($blogPosts->take(2) as $post)
-            <div class="blog-card">
-                <div class="blog-card__img">
-                    <img src="{{ $post->image ? asset('uploads/blog/' . $post->image) : 'https://via.placeholder.com/600x400?text=No+Image' }}" alt="{{ $post->title }}">
-                </div>
-                <div class="blog-card__title">{{ mb_strtoupper($post->title) }}</div>
-            </div>
-        @endforeach
-    </div>
-</div>
-
 <div class="delivery-section">
     <div class="delivery-header">
         <h2 class="delivery-title">Доставка</h2>

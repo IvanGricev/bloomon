@@ -1,0 +1,375 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+@font-face {
+    font-family: 'Kudry';
+    src: url('/fonts/Kudry.woff2') format('woff2'),
+         url('/fonts/Kudry.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: #fff;
+    color: #222;
+    margin: 0;
+    padding: 0;
+}
+
+
+.hero-ideas {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 50px;
+    padding: 64px 0 0px 0;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+.hero-ideas-text {
+    font-family: 'Montserrat', sans-serif;
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.hero-ideas-title {
+    font-family: 'Kudry', sans-serif;
+    font-weight: 500;
+    font-size: 3.5rem;
+    color: #d97c6a;
+    margin-bottom: 0em;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+}
+.hero-ideas-desc {
+    font-size: 1.35rem;
+    color: #222;
+    margin-bottom: 2.2em;
+    line-height: 1.4;
+    max-width: 600px;
+}
+.hero-ideas-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2em 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1em;
+}
+.hero-ideas-list li {
+    display: flex;
+    align-items: flex-start;
+    font-size: 1.08rem;
+    color: #444;
+    gap: 0.9em;
+}
+.hero-ideas-list svg {
+    width: 1.5em;
+    height: 1.5em;
+    flex-shrink: 0;
+    fill: #d97c6a;
+    margin-top: 2px;
+}
+.hero-ideas-note {
+    color: #d97c6a;
+    font-size: 1.02rem;
+    margin-top: 0.1em;
+    max-width: 520px;
+}
+.hero-ideas-image {
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 320px;
+    max-width: none;
+    margin-right: calc(-1 * (100vw - 100%) / 2);
+}
+.hero-ideas-image img {
+    width: 100vw;
+    max-width: none;
+    min-width: 800px;
+    border-radius: 0 0px 0px 0;
+    box-shadow: 0 8px 32px rgba(217,124,106,0.13);
+    object-fit: cover;
+    transition: transform 0.4s cubic-bezier(.4,1.4,.6,1), box-shadow 0.3s;
+    display: block;
+}
+.hero-ideas-image img:hover {
+    transform: scale(1.035) rotate(-1deg);
+    box-shadow: 0 16px 48px rgba(217,124,106,0.18);
+}
+@media (max-width: 1100px) {
+    .hero-ideas {
+        flex-direction: column;
+        gap: 32px;
+        padding: 40px 0 24px 0;
+    }
+    .hero-ideas-text {
+        padding-left: 0;
+    }
+    .hero-ideas-image {
+        margin-right: 0;
+        max-width: 100vw;
+    }
+    .hero-ideas-image img {
+        min-width: 0;
+        width: 100%;
+        border-radius: 18px;
+    }
+}
+@media (max-width: 700px) {
+    .hero-ideas-title {
+        font-size: 2rem;
+    }
+    .hero-ideas-desc {
+        font-size: 1.05rem;
+    }
+    .hero-ideas {
+        padding: 18px 0 8px 0;
+    }
+    .hero-ideas-image img {
+        max-width: 98vw;
+    }
+}
+
+.compositions-section {
+    margin: 150px auto 0 auto;
+    max-width: 1400px;
+    text-align: center;
+    padding: 0 16px;
+}
+.compositions-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 500;
+    margin-bottom: 0em;
+    color: #222;
+}
+.compositions-subtitle {
+    font-family: 'Kudry', 'Montserrat', serif;
+    font-size: 2.7rem;
+    color: #d97c6a;
+    font-weight: 400;
+    margin-bottom: 0.5em;
+    letter-spacing: 0.01em;
+}
+.compositions-desc {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.08rem;
+    color: #444;
+    max-width: 700px;
+    margin: 0 auto 0.7em auto;
+    line-height: 1.3;
+}
+.compositions-desc strong {
+    color: #d97c6a;
+    font-weight: 600;
+}
+.compositions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.9fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 38px;
+    margin-top: 38px;
+    justify-items: center;
+    align-items: stretch;
+}
+.composition-card {
+    background: #fff;
+    border-radius: 22px;
+    box-shadow: 0 4px 32px rgba(217,124,106,0.10);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: box-shadow 0.25s, transform 0.25s;
+    min-width: 0;
+}
+.composition-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.composition-card:first-child,
+.composition-card:last-child {
+    height: 370px;
+    min-width: 0;
+    max-width: 100%;
+}
+.composition-card:nth-child(2) {
+    height: 420px;
+    min-width: 0;
+    max-width: 100%;
+}
+.composition-card:hover {
+    box-shadow: 0 8px 48px rgba(217,124,106,0.18);
+    transform: translateY(-6px) scale(1.03);
+}
+@media (max-width: 1100px) {
+    .compositions-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 24px;
+    }
+    .composition-card:first-child,
+    .composition-card:last-child,
+    .composition-card:nth-child(2) {
+        height: 260px;
+    }
+    .composition-card:nth-child(2) {
+        grid-column: 1 / span 2;
+        height: 320px;
+    }
+}
+@media (max-width: 700px) {
+    .compositions-title {
+        font-size: 1.3rem;
+    }
+    .compositions-subtitle {
+        font-size: 1.5rem;
+    }
+    .compositions-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+    .composition-card,
+    .composition-card img {
+        height: 180px;
+        min-height: 0;
+    }
+    .composition-card:nth-child(2) {
+        height: 220px;
+    }
+}
+
+.flowers-section {
+    margin: 140px auto 0 auto;
+    max-width: 1400px;
+    padding: 0 16px;
+}
+.flowers-block {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 50px;
+}
+.flowers-block.reverse {
+    flex-direction: row-reverse;
+}
+.flowers-img {
+    flex: 1 1 0;
+    min-width: 320px;
+    max-width: 580px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.flowers-img img {
+    width: 100%;
+    border-radius: 24px;
+    object-fit: cover;
+    display: block;
+}
+.flowers-content {
+    flex: 0.5 1 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.2em;
+    min-width: 0;
+}
+.flowers-title {
+    font-family: 'Kudry', 'Montserrat', serif;
+    font-size: 2.7rem;
+    color: #d97c6a;
+    font-weight: 500;
+    text-align: center;
+}
+.flowers-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.1rem;
+    color: #222;
+    font-weight: 500;
+    margin-bottom: 1.7em;
+    text-align: center;
+}
+.flowers-content h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.25rem;
+    color: #d97c6a;
+    font-weight: 700;
+    margin-bottom: 0.1em;
+    margin-top: 0.5em;
+    text-align: left;
+}
+.flowers-content h4 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.1rem;
+    color: #222;
+    font-weight: 600;
+    margin-bottom: 0.2em;
+    margin-top: 0.2em;
+    text-align: left;
+}
+.flowers-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7em;
+}
+.flowers-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7em;
+    font-size: 1.04rem;
+    color: #444;
+}
+.flowers-list svg {
+    width: 1.2em;
+    height: 1.2em;
+    flex-shrink: 0;
+    fill: #d97c6a;
+    margin-top: 2px;
+}
+.flowers-block .flowers-content strong {
+    color: #d97c6a;
+    font-weight: 700;
+}
+@media (max-width: 1100px) {
+    .flowers-block, .flowers-block.reverse {
+        flex-direction: column !important;
+        gap: 32px;
+        align-items: stretch;
+    }
+    .flowers-img, .flowers-content {
+        max-width: 100%;
+    }
+    .flowers-img img {
+        border-radius: 18px;
+    }
+}
+@media (max-width: 700px) {
+    .flowers-section {
+        margin: 60px auto 0 auto;
+    }
+    .flowers-title {
+        font-size: 1.5rem;
+    }
+    .flowers-subtitle {
+        font-size: 1.1rem;
+    }
+    .flowers-block {
+        gap: 18px;
+        margin-bottom: 38px;
+    }
+    .flowers-img img {
+        border-radius: 12px;
+    }
+}

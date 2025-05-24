@@ -9,14 +9,6 @@
                 <span>Главная</span> / <span>Каталог</span>
             </div>
         </div>
-        <div class="catalog-sort">
-            <span class="sort-label">Сортировать по:</span>
-            <a href="#" class="sort-link active">ЦЕНЕ</a>
-            <span class="sort-divider">|</span>
-            <a href="#" class="sort-link">РЕЙТИНГУ</a>
-            <span class="sort-divider">|</span>
-            <a href="#" class="sort-link">НОВИНКЕ</a>
-        </div>
     </div>
     <h1 class="catalog-title mb-4">Каталог</h1>
 
