@@ -25,9 +25,7 @@
         <li class="nav-item">
           <a class="nav-link" href="{{ route('about') }}">О нас</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{ route('contact') }}">Контакты</a>
-        </li>
+        
       </ul>
       
       <!-- Правая часть меню -->
