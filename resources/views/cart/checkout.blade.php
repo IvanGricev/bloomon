@@ -1,5 +1,7 @@
 @extends('main')
 
+<link rel="stylesheet" href="{{ asset('css/checkout.css') }}">
+
 @section('content')
 <div class="container my-5">
     <h1>Оформление заказа</h1>
