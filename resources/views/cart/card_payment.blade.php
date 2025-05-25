@@ -1,5 +1,7 @@
 @extends('main')
 
+<link rel="stylesheet" href="{{ asset('css/card_payment.css') }}">
+
 @section('content')
 <div class="container my-5">
     <h1>Оплата картой</h1>

@@ -6,7 +6,7 @@
     <div class="row">
         @foreach($subscriptions as $subscription)
             <div class="col-md-4 mb-4">
-                <div class="card h-100">
+                <div class="card h-100">    
                     @if($subscription->image)
                         <img src="{{ asset('uploads/subscriptions/' . $subscription->image) }}" class="card-img-top" alt="{{ $subscription->name }}">
                     @endif
@@ -35,4 +35,5 @@
         @endforeach
     </div>
 </div>
+
 @endsection
