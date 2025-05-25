@@ -1,4 +1,5 @@
 @extends('main')
+<link rel="stylesheet" href="{{ asset('css/profile.css') }}">
 
 @section('content')
 <div class="container my-5">
@@ -120,4 +121,5 @@
     </div>
 
 </div>
+
 @endsection
