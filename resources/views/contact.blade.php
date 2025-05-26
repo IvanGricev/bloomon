@@ -1,6 +1,9 @@
 @extends('main')
 
+    <link rel="stylesheet" href="{{ asset('css/contact.css') }}">
+
 @section('content')
+<div class="container-contact">
     <h1>Контакты</h1>
     <p>Свяжитесь с нами:</p>
     <ul>
@@ -26,4 +29,5 @@
         </div>
         <button type="submit" class="btn btn-primary">Отправить</button>
     </form>
+</div>
 @endsection
