@@ -1,5 +1,7 @@
 @extends('main')
 
+<link rel="stylesheet" href="{{ asset('css/order-show.css') }}">
+
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <h1 class="text-2xl font-bold mb-6">Детали заказа #{{ $order->id }}</h1>
@@ -10,8 +12,8 @@
                 <h2 class="text-xl font-semibold mb-4">Информация о заказе</h2>
                 <p><strong>Статус:</strong> 
                     <span class="px-2 py-1 rounded text-sm
-                        @if($order->status === 'pending') bg-yellow-100 text-yellow-800
-                        @elseif($order->status === 'completed') bg-green-100 text-green-800
+                        @if($order->status === 'new') bg-yellow-100 text-yellow-800
+                        @elseif($order->status === 'delivered') bg-green-100 text-green-800
                         @elseif($order->status === 'cancelled') bg-red-100 text-red-800
                         @else bg-gray-100 text-gray-800
                         @endif">
