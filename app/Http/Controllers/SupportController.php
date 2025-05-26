@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Support\StoreTicketRequest;
 use App\Models\SupportTicket;
 use App\Models\SupportMessage;
 use App\Models\SupportAttachment;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
@@ -15,10 +16,7 @@ class SupportController extends Controller
 
     public function index()
     {
-        $tickets = auth()->user()->supportTickets()
-            ->latest()
-            ->get();
-        
+        $tickets = Auth::user()->supportTickets()->with('messages')->latest()->get();
         return view('support.index', compact('tickets'));
     }
 
@@ -27,85 +25,73 @@ class SupportController extends Controller
         return view('support.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreTicketRequest $request)
     {
-        $validated = $request->validate([
-            'subject' => 'required|string|max:255',
-            'message' => 'required|string',
-            'attachments.*' => 'nullable|image|max:5120' // max 5MB
-        ]);
+        try {
+            $data = $request->validated();
+            $data['user_id'] = Auth::id();
+            $data['status'] = 'open';
 
-        $ticket = SupportTicket::create([
-            'user_id' => auth()->id(),
-            'subject' => $validated['subject'],
-            'message' => $validated['message'],
-            'status' => 'new'
-        ]);
+            $ticket = SupportTicket::create($data);
 
-        if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $file) {
-                $path = $file->store('uploads/support', 'public');
-                
-                SupportAttachment::create([
-                    'ticket_id' => $ticket->id,
-                    'file_path' => $path,
-                    'original_name' => $file->getClientOriginalName(),
-                    'mime_type' => $file->getMimeType(),
-                    'size' => $file->getSize()
-                ]);
+            // Create initial message
+            $message = $ticket->messages()->create([
+                'user_id' => Auth::id(),
+                'message' => $data['message'],
+            ]);
+
+            // Handle attachments
+            if ($request->hasFile('attachments')) {
+                foreach ($request->file('attachments') as $file) {
+                    $path = $file->store('support/attachments', 'public');
+                    $message->attachments()->create([
+                        'file_path' => $path,
+                    ]);
+                }
             }
-        }
 
-        return redirect()->route('support.show', $ticket)
-            ->with('success', 'Запрос в поддержку создан');
+            return redirect()->route('support.show', $ticket)
+                ->with('success', 'Обращение успешно создано');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Произошла ошибка при создании обращения. Пожалуйста, попробуйте снова.');
+        }
     }
 
     public function show(SupportTicket $ticket)
     {
-        $this->authorize('view', $ticket);
-        
-        $messages = $ticket->messages()
-            ->with(['user', 'attachments'])
-            ->oldest()
-            ->get();
-        
-        return view('support.show', compact('ticket', 'messages'));
+        if ($ticket->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $ticket->load(['messages.user', 'messages.attachments']);
+        return view('support.show', compact('ticket'));
     }
 
-    public function storeMessage(Request $request, SupportTicket $ticket)
+    public function storeMessage(StoreTicketRequest $request, SupportTicket $ticket)
     {
-        $this->authorize('update', $ticket);
-
-        if ($ticket->status === 'closed') {
-            return back()->with('error', 'Нельзя добавить сообщение в закрытый тикет');
-        }
-
-        $validated = $request->validate([
-            'message' => 'required|string',
-            'attachments.*' => 'nullable|image|max:5120'
-        ]);
-
-        $message = SupportMessage::create([
-            'ticket_id' => $ticket->id,
-            'user_id' => auth()->id(),
-            'message' => $validated['message']
-        ]);
-
-        if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $file) {
-                $path = $file->store('uploads/support', 'public');
-                
-                SupportAttachment::create([
-                    'ticket_id' => $ticket->id,
-                    'message_id' => $message->id,
-                    'file_path' => $path,
-                    'original_name' => $file->getClientOriginalName(),
-                    'mime_type' => $file->getMimeType(),
-                    'size' => $file->getSize()
-                ]);
+        try {
+            if ($ticket->user_id !== Auth::id()) {
+                abort(403);
             }
-        }
 
-        return back()->with('success', 'Сообщение добавлено');
+            $data = $request->validated();
+            $message = $ticket->messages()->create([
+                'user_id' => Auth::id(),
+                'message' => $data['message'],
+            ]);
+
+            if ($request->hasFile('attachments')) {
+                foreach ($request->file('attachments') as $file) {
+                    $path = $file->store('support/attachments', 'public');
+                    $message->attachments()->create([
+                        'file_path' => $path,
+                    ]);
+                }
+            }
+
+            return back()->with('success', 'Сообщение успешно отправлено');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте снова.');
+        }
     }
 } 

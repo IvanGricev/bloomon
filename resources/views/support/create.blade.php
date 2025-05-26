@@ -9,6 +9,9 @@
                     <h2 class="mb-0">Обратиться в поддержку</h2>
                 </div>
                 <div class="card-body">
+                    <x-error-alert />
+                    <x-success-message />
+
                     <form action="{{ route('support.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         
@@ -20,9 +23,7 @@
                                    name="subject" 
                                    value="{{ old('subject') }}" 
                                    required>
-                            @error('subject')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <x-error-message field="subject" />
                         </div>
 
                         <div class="mb-3">
@@ -32,9 +33,7 @@
                                       name="message" 
                                       rows="5" 
                                       required>{{ old('message') }}</textarea>
-                            @error('message')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <x-error-message field="message" />
                         </div>
 
                         <div class="mb-3">
@@ -46,9 +45,7 @@
                                    multiple 
                                    accept="image/*">
                             <div class="form-text">Можно загрузить несколько изображений. Максимальный размер каждого файла - 5MB.</div>
-                            @error('attachments.*')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <x-error-message field="attachments" />
                         </div>
 
                         <div class="d-flex justify-content-between">

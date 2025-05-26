@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -16,24 +17,17 @@ class AuthController extends Controller
     }
 
     // Регистрация пользователя
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $request->validate([
-           'name'     => 'required|string|min:2|max:255',  // Имя должно быть минимум 2 символа
-           'email'    => 'required|string|email|max:255|unique:users', // Проверяет корректность email
-           'password' => 'required|string|min:6|confirmed', // Пароль минимум 6 символов и обязательно совпадение с password_confirmation
-        ]);
-    
-        $user = User::create([
-           'name'     => $request->name,
-           'email'    => $request->email,
-           'password' => Hash::make($request->password),
-           'role'     => 'client'
-        ]);
-    
+        $data = $request->validated();
+        $data['password'] = Hash::make($data['password']);
+        $data['role'] = 'client';
+
+        $user = User::create($data);
+
         Auth::login($user);
-    
-        return redirect()->route('home')->with('success', 'Регистрация прошла успешно!');
+
+        return redirect('/');
     }
 
     // Форма входа
@@ -43,29 +37,26 @@ class AuthController extends Controller
     }
 
     // Вход пользователя
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $request->validate([
-            'email'    => 'required|email', // Проверка корректного email
-            'password' => 'required|string|min:6', // Пароль минимум 6 символов
-        ]);
-    
-        $credentials = $request->only('email', 'password');
-    
+        $credentials = $request->validated();
+
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('home')->with('success', 'Вы успешно вошли в систему!');
+            return redirect()->intended('/');
         }
-    
-        return back()->withErrors(['email' => 'Неверные учетные данные.']);
+
+        return back()->withErrors([
+            'email' => 'Неверный email или пароль',
+        ])->withInput();
     }
 
     // Выход пользователя
-    public function logout(Request $request)
+    public function logout()
     {
         Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect()->route('home')->with('success', 'Вы успешно вышли из системы.');
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect('/');
     }
 }

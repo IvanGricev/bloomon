@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Product\StoreProductRequest;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -36,9 +38,9 @@ class ProductController extends Controller
     }
 
     // Отображение карточки конкретного товара
-    public function show($id)
+    public function show(Product $product)
     {
-        $product = Product::with('images')->findOrFail($id);
+        $product->load(['category', 'reviews.user']);
         return view('products.show', compact('product'));
     }
 
@@ -47,67 +49,73 @@ class ProductController extends Controller
     // Форма создания товара
     public function create()
     {
-        return view('products.create');
+        $categories = Category::all();
+        return view('products.create', compact('categories'));
     }
 
     // Сохранение нового товара
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $validated = $request->validate([
-            'name'        => 'required|string|max:255',
-            'description' => 'required|string',
-            'price'       => 'required|numeric',
-            // Для загрузки нескольких изображений
-            'images.*'    => 'nullable|image|max:2048',
-        ]);
+        try {
+            $data = $request->validated();
 
-        $product = Product::create([
-            'name'        => $validated['name'],
-            'description' => $validated['description'],
-            'price'       => $validated['price'],
-        ]);
-
-        // Если файлы загружены, сохраняем каждый и создаем запись в связанной таблице
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $file) {
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('uploads/products'), $filename);
-                // Предполагаем, что в модели Product создан метод images() (отношение hasMany)
-                $product->images()->create(['image_path' => $filename]);
+            if ($request->hasFile('photo')) {
+                $path = $request->file('photo')->store('products', 'public');
+                $data['photo'] = $path;
             }
-        }
 
-        return redirect()->route('products.index')->with('success', 'Товар успешно создан!');
+            $product = Product::create($data);
+
+            return redirect()->route('products.show', $product)
+                ->with('success', 'Товар успешно создан');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Произошла ошибка при создании товара. Пожалуйста, попробуйте снова.');
+        }
     }
 
     // Форма редактирования товара
-    public function edit($id)
+    public function edit(Product $product)
     {
-        $product = Product::findOrFail($id);
-        return view('products.edit', compact('product'));
+        $categories = Category::all();
+        return view('products.edit', compact('product', 'categories'));
     }
 
     // Обновление товара
-    public function update(Request $request, $id)
+    public function update(StoreProductRequest $request, Product $product)
     {
-        $product = Product::findOrFail($id);
-        $validated = $request->validate([
-            'name'        => 'required|string',
-            'description' => 'nullable|string',
-            'price'       => 'required|numeric',
-            'category_id' => 'required|exists:categories,id',
-            'photo'       => 'nullable|string',
-        ]);
+        try {
+            $data = $request->validated();
 
-        $product->update($validated);
-        return redirect()->route('products.index')->with('success', 'Товар обновлён.');
+            if ($request->hasFile('photo')) {
+                if ($product->photo) {
+                    Storage::disk('public')->delete($product->photo);
+                }
+                $path = $request->file('photo')->store('products', 'public');
+                $data['photo'] = $path;
+            }
+
+            $product->update($data);
+
+            return redirect()->route('products.show', $product)
+                ->with('success', 'Товар успешно обновлен');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Произошла ошибка при обновлении товара. Пожалуйста, попробуйте снова.');
+        }
     }
 
     // Удаление товара
-    public function destroy($id)
+    public function destroy(Product $product)
     {
-        $product = Product::findOrFail($id);
-        $product->delete();
-        return redirect()->route('products.index')->with('success', 'Товар удалён.');
+        try {
+            if ($product->photo) {
+                Storage::disk('public')->delete($product->photo);
+            }
+            $product->delete();
+
+            return redirect()->route('products.index')
+                ->with('success', 'Товар успешно удален');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Произошла ошибка при удалении товара. Пожалуйста, попробуйте снова.');
+        }
     }
 }

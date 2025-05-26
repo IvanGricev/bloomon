@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\Review\StoreReviewRequest;
 use App\Models\Review;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
@@ -10,21 +10,33 @@ use Illuminate\Support\Facades\Auth;
 class ReviewController extends Controller
 {
     // Добавление отзыва к товару
-    public function store(Request $request, $productId)
+    public function store(StoreReviewRequest $request, Product $product)
     {
-        $validated = $request->validate([
-            'text'   => 'required|string',
-            'rating' => 'required|integer|min:1|max:5'
-        ]);
-        
-        $product = Product::findOrFail($productId);
-        Review::create([
-            'user_id'    => Auth::id(),
-            'product_id' => $product->id,
-            'text'       => $validated['text'],
-            'rating'     => $validated['rating'],
-        ]);
-        
-        return redirect()->back()->with('success', 'Отзыв добавлен.');
+        try {
+            $data = $request->validated();
+            $data['user_id'] = Auth::id();
+            $data['product_id'] = $product->id;
+
+            $review = Review::create($data);
+
+            return back()->with('success', 'Отзыв успешно добавлен');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Произошла ошибка при добавлении отзыва. Пожалуйста, попробуйте снова.');
+        }
+    }
+
+    public function destroy(Review $review)
+    {
+        try {
+            if ($review->user_id !== Auth::id()) {
+                abort(403);
+            }
+
+            $review->delete();
+
+            return back()->with('success', 'Отзыв успешно удален');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Произошла ошибка при удалении отзыва. Пожалуйста, попробуйте снова.');
+        }
     }
 }
