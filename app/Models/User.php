@@ -40,7 +40,27 @@ class User extends Authenticatable
 
     public function subscriptions()
     {
-        return $this->belongsToMany(\App\Models\Subscription::class, 'subscription_user')->withTimestamps();
+        return $this->belongsToMany(Subscription::class)
+            ->using(SubscriptionUser::class)
+            ->withPivot(['last_payment_date', 'subscription_end_date', 'status'])
+            ->withTimestamps();
+    }
+
+    public function getActiveSubscriptions()
+    {
+        return $this->subscriptions()
+            ->wherePivot('status', 'active')
+            ->wherePivot('subscription_end_date', '>', now())
+            ->get();
+    }
+
+    public function getExpiringSubscriptions()
+    {
+        return $this->subscriptions()
+            ->wherePivot('status', 'active')
+            ->wherePivot('subscription_end_date', '>', now())
+            ->wherePivot('subscription_end_date', '<=', now()->addDays(7))
+            ->get();
     }
 
     public function logs()

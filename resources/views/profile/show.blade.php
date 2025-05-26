@@ -40,6 +40,55 @@
         </div>
     </div>
 
+    <!-- Секция с подписками -->
+    <div class="row my-4">
+        <div class="col-12">
+            <h3>Ваши подписки:</h3>
+            <div class="row">
+                @forelse(auth()->user()->subscriptions()->withPivot(['last_payment_date', 'subscription_end_date', 'status'])->get() as $subscription)
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            @if($subscription->image)
+                                <img src="{{ asset('uploads/subscriptions/' . $subscription->image) }}" class="card-img-top" alt="{{ $subscription->name }}">
+                            @endif
+                            <div class="card-body">
+                                <h5 class="card-title">{{ $subscription->name }}</h5>
+                                <p class="card-text">{{ $subscription->description }}</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Последняя оплата: {{ $subscription->pivot->last_payment_date ? $subscription->pivot->last_payment_date->format('d.m.Y') : 'Нет данных' }}<br>
+                                        Действует до: {{ $subscription->pivot->subscription_end_date ? $subscription->pivot->subscription_end_date->format('d.m.Y') : 'Нет данных' }}<br>
+                                        Статус: <span class="{{ $subscription->pivot->status === 'active' ? 'text-success' : 'text-danger' }}">
+                                            {{ $subscription->pivot->status === 'active' ? 'Активна' : 'Отменена' }}
+                                        </span>
+                                    </small>
+                                </p>
+                                @if($subscription->pivot->status === 'active')
+                                    @if($subscription->pivot->subscription_end_date && $subscription->pivot->subscription_end_date->diffInDays(now()) <= 7)
+                                        <form action="{{ route('subscriptions.renew', $subscription->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="btn btn-primary">Продлить</button>
+                                        </form>
+                                    @endif
+                                    <form action="{{ route('subscriptions.destroy', $subscription->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">Отменить</button>
+                                    </form>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="col-12">
+                        <p>У вас пока нет активных подписок.</p>
+                        <a href="{{ route('subscriptions.index') }}" class="btn btn-primary">Посмотреть доступные подписки</a>
+                    </div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+
     <!-- Кнопки для открытия модальных окон -->
     <div class="mb-4">
         <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#editProfileModal">

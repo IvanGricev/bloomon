@@ -21,11 +21,11 @@
                     </div>
                     <div class="card-footer">
                         @auth
-                            <form action="{{ route('subscriptions.store') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="subscription_id" value="{{ $subscription->id }}">
-                                <button type="submit" class="btn btn-primary btn-block">Подписаться</button>
-                            </form>
+                            @if(auth()->user()->subscriptions->contains($subscription->id))
+                                <button class="btn btn-secondary btn-block" disabled>Вы уже подписаны</button>
+                            @else
+                                <a href="{{ route('subscriptions.payment', $subscription->id) }}" class="btn btn-primary btn-block">Подписаться</a>
+                            @endif
                         @else
                             <a href="{{ route('login') }}" class="btn btn-secondary btn-block">Войдите для подписки</a>
                         @endauth

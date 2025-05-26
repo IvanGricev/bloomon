@@ -92,8 +92,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/products/{id}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 
     // Подписки
+    Route::get('/profile/subscriptions', [SubscriptionController::class, 'profileIndex'])->name('profile.subscriptions');
+    Route::get('/subscriptions/{id}/payment', [SubscriptionController::class, 'showPaymentForm'])->name('subscriptions.payment');
+    Route::post('/subscriptions/{id}/payment', [SubscriptionController::class, 'processPayment'])->name('subscriptions.process_payment');
     Route::post('/subscriptions', [SubscriptionController::class, 'store'])->name('subscriptions.store');
     Route::delete('/subscriptions/{id}', [SubscriptionController::class, 'destroy'])->name('subscriptions.destroy');
+    Route::post('/subscriptions/{id}/renew', [SubscriptionController::class, 'renew'])->name('subscriptions.renew');
 
     // Корзина
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
