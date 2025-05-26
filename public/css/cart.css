@@ -23,7 +23,7 @@ body {
     flex: 2 1 0;
     background: #fff;
     border-radius: 20px;
-    padding: 32px 28px 28px 28px;
+    padding: 2px 28px 8px 28px;
     min-width: 0;
 }
 .cart-products-panel h1 {

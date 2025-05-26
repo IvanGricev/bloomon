@@ -15,6 +15,7 @@
 
     /* Стили для отзывов */
     .reviews-section {
+        font-family: 'Montserrat', sans-serif;
         margin-top: 3rem;
         padding-top: 2rem;
         border-top: 1px solid #eee;
