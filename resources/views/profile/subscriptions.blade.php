@@ -1,60 +1,64 @@
 @extends('main')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-8">Мои подписки</h1>
+<div class="container my-5">
+    <h1 class="mb-4">Мои подписки</h1>
 
     @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-            <span class="block sm:inline">{{ session('success') }}</span>
+        <div class="alert alert-success">
+            {{ session('success') }}
         </div>
     @endif
 
     @if(session('error'))
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-            <span class="block sm:inline">{{ session('error') }}</span>
+        <div class="alert alert-danger">
+            {{ session('error') }}
         </div>
     @endif
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="row">
         @forelse($userSubscriptions as $subscription)
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                @if($subscription->image)
-                    <img src="{{ asset('uploads/subscriptions/' . $subscription->image) }}" alt="{{ $subscription->name }}" class="w-full h-48 object-cover">
-                @endif
-                <div class="p-6">
-                    <h2 class="text-xl font-semibold mb-2">{{ $subscription->name }}</h2>
-                    <p class="text-gray-600 mb-4">{{ $subscription->description }}</p>
-                    
-                    <div class="mb-4">
-                        <p class="text-sm text-gray-500">
-                            Последняя оплата: {{ $subscription->pivot->last_payment_date ? $subscription->pivot->last_payment_date->format('d.m.Y') : 'Нет данных' }}
-                        </p>
-                        <p class="text-sm text-gray-500">
-                            Действует до: {{ $subscription->pivot->subscription_end_date ? $subscription->pivot->subscription_end_date->format('d.m.Y') : 'Нет данных' }}
-                        </p>
-                        <p class="text-sm font-medium {{ $subscription->pivot->status === 'active' ? 'text-green-600' : 'text-red-600' }}">
-                            Статус: {{ $subscription->pivot->status === 'active' ? 'Активна' : 'Отменена' }}
-                        </p>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    @if($subscription->image)
+                        <img src="{{ asset('uploads/subscriptions/' . $subscription->image) }}" 
+                             class="card-img-top" 
+                             alt="{{ $subscription->name }}"
+                             style="height: 200px; object-fit: cover;">
+                    @endif
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $subscription->name }}</h5>
+                        <p class="card-text text-muted">{{ $subscription->description }}</p>
+                        <div class="subscription-details">
+                            <p class="mb-2">
+                                <strong>Последняя оплата:</strong><br>
+                                {{ $subscription->pivot->last_payment_date ? $subscription->pivot->last_payment_date->format('d.m.Y') : 'Нет данных' }}
+                            </p>
+                            <p class="mb-2">
+                                <strong>Действует до:</strong><br>
+                                {{ $subscription->pivot->subscription_end_date ? $subscription->pivot->subscription_end_date->format('d.m.Y') : 'Нет данных' }}
+                            </p>
+                            <p class="mb-0">
+                                <strong>Статус:</strong><br>
+                                <span class="badge bg-{{ $subscription->pivot->status === 'active' ? 'success' : 'danger' }}">
+                                    {{ $subscription->pivot->status === 'active' ? 'Активна' : 'Отменена' }}
+                                </span>
+                            </p>
+                        </div>
                     </div>
-
-                    <div class="flex justify-between items-center">
-                        <span class="text-2xl font-bold">{{ number_format($subscription->price, 2) }} ₽</span>
-                        
+                    <div class="card-footer bg-white border-top-0">
                         @if($subscription->pivot->status === 'active')
                             @if($subscription->pivot->subscription_end_date && $subscription->pivot->subscription_end_date->diffInDays(now()) <= 7)
-                                <form action="{{ route('subscriptions.renew', $subscription->id) }}" method="POST" class="inline">
+                                <form action="{{ route('subscriptions.renew', $subscription->id) }}" method="POST" class="d-inline w-100">
                                     @csrf
-                                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-                                        Продлить
-                                    </button>
+                                    <button type="submit" class="btn btn-primary w-100 mb-2">Продлить</button>
                                 </form>
                             @endif
-                            
-                            <form action="{{ route('subscriptions.destroy', $subscription->id) }}" method="POST" class="inline">
+                            <form action="{{ route('subscriptions.destroy', $subscription->id) }}" method="POST" class="d-inline w-100">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
+                                <button type="submit" class="btn btn-outline-danger w-100" 
+                                        onclick="return confirm('Вы уверены, что хотите отменить подписку?')">
                                     Отменить
                                 </button>
                             </form>
@@ -63,39 +67,34 @@
                 </div>
             </div>
         @empty
-            <div class="col-span-full">
-                <p class="text-gray-500 text-center">У вас пока нет активных подписок.</p>
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <p class="mb-0">У вас пока нет активных подписок.</p>
+                </div>
+                <a href="{{ route('subscriptions.index') }}" class="btn btn-primary">Посмотреть доступные подписки</a>
             </div>
         @endforelse
     </div>
-
-    @if($allSubscriptions->isNotEmpty())
-        <h2 class="text-2xl font-bold mt-12 mb-6">Доступные подписки</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach($allSubscriptions as $subscription)
-                @if(!$userSubscriptions->contains($subscription->id))
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        @if($subscription->image)
-                            <img src="{{ asset('uploads/subscriptions/' . $subscription->image) }}" alt="{{ $subscription->name }}" class="w-full h-48 object-cover">
-                        @endif
-                        <div class="p-6">
-                            <h2 class="text-xl font-semibold mb-2">{{ $subscription->name }}</h2>
-                            <p class="text-gray-600 mb-4">{{ $subscription->description }}</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-2xl font-bold">{{ number_format($subscription->price, 2) }} ₽</span>
-                                <form action="{{ route('subscriptions.store') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="subscription_id" value="{{ $subscription->id }}">
-                                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
-                                        Подписаться
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-            @endforeach
-        </div>
-    @endif
 </div>
+
+@push('styles')
+<style>
+    .subscription-details {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-top: 1rem;
+    }
+    .card {
+        transition: transform 0.2s;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    .badge {
+        font-size: 0.9rem;
+        padding: 0.5em 1em;
+    }
+</style>
+@endpush
 @endsection
