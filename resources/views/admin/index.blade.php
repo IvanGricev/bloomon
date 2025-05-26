@@ -1,6 +1,8 @@
 @extends('main')
+<link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 
 @section('content')
+
 <div class="container my-5">
     <h1 class="mb-4">Панель администратора</h1>
     
@@ -48,18 +50,6 @@
         </div>
     </div>
     
-    <div class="row">
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Запросы в поддержку</h5>
-                    <p class="card-text">Управление запросами пользователей в службу поддержки</p>
-                    <a href="{{ route('admin.support.index') }}" class="btn btn-primary">Перейти</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    
     <!-- Навигационное меню для перехода в другие разделы админ-панели -->
     <h2>Навигация по разделам</h2>
     <ul class="list-group">
@@ -78,6 +68,11 @@
         <li class="list-group-item">
             <a href="{{ route('admin.subscriptions.index') }}">Подписки</a>
         </li>
+        <li class="list-group-item">
+            <a href="{{ route('admin.support.index') }}">Запросы в поддержку</a>
+        </li>
     </ul>
+
+    
 </div>
 @endsection
