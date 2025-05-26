@@ -1,5 +1,7 @@
 @extends('main')
 
+    <link rel="stylesheet" href="{{ asset('css/support-create.css') }}">
+
 @section('content')
 <div class="container my-5">
     <div class="row justify-content-center">
@@ -49,8 +51,8 @@
                         </div>
 
                         <div class="d-flex justify-content-between">
-                            <a href="{{ route('support.index') }}" class="btn btn-secondary">Назад</a>
-                            <button type="submit" class="btn btn-primary">Отправить</button>
+                            <a href="{{ route('support.index') }}" class=" btn-secondary">Назад</a>
+                            <button type="submit" class=" btn-primary">Отправить</button>
                         </div>
                     </form>
                 </div>

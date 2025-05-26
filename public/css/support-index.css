@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: #f8f9fb;
+    color: #222;
+}
+
+.container.my-5 {
+    max-width: 1100px;
+    margin: 48px auto;
+    padding: 0 16px;
+}
+
+h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    color: #d97c6a;
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: left;
+    letter-spacing: 0.5px;
+}
+
+.d-flex.justify-content-between {
+    margin-bottom: 32px;
+}
+
+.btn-primary {
+    background: transparent;
+    color: #d97c6a;
+    border: 2px solid #d97c6a;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 22px;
+    font-size: 1.05rem;
+    transition: all 0.2s;
+}
+
+.btn-primary:hover {
+    background: #d97c6a;
+    color: #fff;
+    border-color: #d97c6a;
+}
+
+.table-responsive {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(217,124,106,0.08);
+    padding: 24px;
+}
+
+.table {
+    margin: 0;
+}
+
+.table thead th {
+    font-weight: 600;
+    color: #222;
+    border-bottom: 2px solid #f0f0f0;
+    padding: 16px;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table tbody td {
+    padding: 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f0f0f0;
+    color: #444;
+    font-size: 1.01rem;
+}
+
+.table tbody tr:hover {
+    background: #fff0ee;
+}
+
+.badge {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 6px 14px;
+    border-radius: 8px;
+    letter-spacing: 0.3px;
+}
+
+.bg-primary {
+    background: #d97c6a !important;
+    color: #fff !important;
+}
+.bg-warning {
+    background: #ffe16b !important;
+    color: #b47b00 !important;
+}
+.bg-success {
+    background: #70ec72 !important;
+    color: #1b5e20 !important;
+}
+.bg-secondary {
+    background: #bdbdbd !important;
+    color: #333 !important;
+}
+
+.alert-info {
+    background: #fff0ee;
+    color: #d97c6a;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .container.my-5 {
+        margin: 24px auto;
+    }
+    h1 {
+        font-size: 1.1rem;
+    }
+    .table-responsive {
+        padding: 10px;
+    }
+    .table thead th, .table tbody td {
+        padding: 8px;
+        font-size: 0.95rem;
+    }
+    .btn-primary {
+        font-size: 0.95rem;
+        padding: 8px 10px;
+    }
+} 

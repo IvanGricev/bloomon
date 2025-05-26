@@ -1,5 +1,7 @@
 @extends('main')
 
+<link rel="stylesheet" href="{{ asset('css/support-index.css') }}">
+
 @section('content')
 <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">

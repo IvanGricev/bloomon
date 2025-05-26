@@ -1,0 +1,134 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: #f8f9fb;
+    color: #222;
+}
+
+.container.my-5 {
+    max-width: 700px;
+    margin: 48px auto;
+    padding: 0 16px;
+}
+
+.card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(217,124,106,0.08);
+    background: #fff;
+}
+
+.card-header {
+    background: none;
+    border-bottom: none;
+    padding: 32px 32px 0 32px;
+}
+
+.card-body {
+    padding: 32px;
+}
+
+h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    color: #d97c6a;
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+label.form-label {
+    font-weight: 600;
+    color: #d97c6a;
+    margin-bottom: 6px;
+}
+
+input.form-control, textarea.form-control {
+    border: 1.5px solid #f0f0f0;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
+    transition: border 0.2s, box-shadow 0.2s;
+    background: #fff;
+}
+
+input.form-control:focus, textarea.form-control:focus {
+    border-color: #d97c6a;
+    box-shadow: 0 0 0 3px rgba(217,124,106,0.08);
+    outline: none;
+}
+
+input[type="file"].form-control {
+    padding: 8px 10px;
+    background: #fff0ee;
+    border-radius: 10px;
+}
+
+.form-text {
+    color: #888;
+    font-size: 0.95rem;
+    margin-top: 2px;
+    margin-bottom: 8px;
+}
+
+.btn-primary {
+    background: transparent;
+    color: #d97c6a;
+    border: 2px solid #d97c6a;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 22px;
+    font-size: 1.05rem;
+    transition: all 0.2s;
+    text-decoration:underline;
+}
+
+.btn-primary:hover {
+    background: #d97c6a;
+    color: #fff;
+    border-color: #d97c6a;
+}
+
+.btn-secondary {
+    background: transparent;
+    color: #7f8c8d;
+    border: 2px solid #7f8c8d;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 22px;
+    font-size: 1.05rem;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    background: #7f8c8d;
+    color: #fff;
+    border-color: #7f8c8d;
+}
+
+.d-flex.justify-content-between {
+    gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .container.my-5 {
+        margin: 24px auto;
+    }
+    .card-header, .card-body {
+        padding: 14px;
+    }
+    h2 {
+        font-size: 1.05rem;
+    }
+    .btn-primary, .btn-secondary {
+        font-size: 0.95rem;
+        padding: 8px 10px;
+    }
+} 
