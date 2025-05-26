@@ -1,5 +1,5 @@
 @extends('main')
-
+<link rel="stylesheet" href="{{ asset('css/admin-product-edit.css') }}">
 @section('content')
 <div class="container my-5">
     <h1>Создать новую подписку</h1>

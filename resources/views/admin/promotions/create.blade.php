@@ -1,5 +1,5 @@
 @extends('main')
-
+<link rel="stylesheet" href="{{ asset('css/admin-product-edit.css') }}">
 @section('content')
 <div class="container my-5">
     <h1>Создать акцию</h1>
@@ -46,7 +46,7 @@
             </select>
             <small class="form-text text-muted">Используйте Ctrl или Command для выбора нескольких категорий.</small>
         </div>
-        <button type="submit" class="btn btn-success">Создать акцию</button>
+        <button type="submit" class="btn btn-primary">Создать акцию</button>
     </form>
 </div>
 @endsection
