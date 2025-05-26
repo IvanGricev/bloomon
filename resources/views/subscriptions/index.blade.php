@@ -1,5 +1,7 @@
 @extends('main')
 
+<link rel="stylesheet" href="{{ asset('css/subscriptions-index.css') }}">
+
 @section('content')
 <div class="container my-5">
     <h1 class="mb-4">Доступные подписки</h1>
@@ -62,39 +64,4 @@
     </div>
 </div>
 
-@push('styles')
-<style>
-    .subscription-details {
-        background-color: #f8f9fa;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        margin-top: 1rem;
-    }
-    .card {
-        transition: transform 0.2s;
-    }
-    .card:hover {
-        transform: translateY(-5px);
-    }
-    .btn-accent {
-        background-color: #d97c6a;
-        border-color: #d97c6a;
-        color: white;
-    }
-    .btn-accent:hover {
-        background-color: #c56b5a;
-        border-color: #c56b5a;
-        color: white;
-    }
-    .btn-outline-accent {
-        color: #d97c6a;
-        border-color: #d97c6a;
-    }
-    .btn-outline-accent:hover {
-        background-color: #d97c6a;
-        border-color: #d97c6a;
-        color: white;
-    }
-</style>
-@endpush
 @endsection
