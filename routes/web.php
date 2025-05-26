@@ -82,6 +82,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 
     // Конструктор букетов
     Route::get('/bouquet-builder', [BouquetBuilderController::class, 'index'])->name('bouquet-builder.index');

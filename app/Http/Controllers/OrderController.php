@@ -123,4 +123,43 @@ class OrderController extends Controller
             return back()->with('error', 'Ошибка при оформлении заказа: ' . $e->getMessage());
         }
     }
+
+    public function cancel(Order $order)
+    {
+        // Проверяем, что заказ принадлежит текущему пользователю
+        if ($order->user_id !== Auth::id()) {
+            abort(403, 'У вас нет доступа к этому заказу');
+        }
+
+        // Проверяем, что заказ можно отменить
+        if ($order->delivery_date->isToday()) {
+            return back()->with('error', 'Невозможно отменить заказ в день доставки');
+        }
+
+        // Проверяем, что заказ еще не отменен
+        if ($order->status === 'cancelled') {
+            return back()->with('error', 'Заказ уже отменен');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Возвращаем товары на склад
+            foreach ($order->items as $item) {
+                $product = $item->product;
+                $product->increment('quantity', $item->quantity);
+            }
+
+            // Обновляем статус заказа
+            $order->update(['status' => 'cancelled']);
+
+            DB::commit();
+
+            return redirect()->route('orders.show', $order)
+                ->with('success', 'Заказ успешно отменен');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Произошла ошибка при отмене заказа');
+        }
+    }
 }

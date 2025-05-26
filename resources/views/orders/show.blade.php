@@ -8,7 +8,16 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <h2 class="text-xl font-semibold mb-4">Информация о заказе</h2>
-                <p><strong>Статус:</strong> {{ $order->status }}</p>
+                <p><strong>Статус:</strong> 
+                    <span class="px-2 py-1 rounded text-sm
+                        @if($order->status === 'pending') bg-yellow-100 text-yellow-800
+                        @elseif($order->status === 'completed') bg-green-100 text-green-800
+                        @elseif($order->status === 'cancelled') bg-red-100 text-red-800
+                        @else bg-gray-100 text-gray-800
+                        @endif">
+                        {{ $order->status }}
+                    </span>
+                </p>
                 <p><strong>Дата заказа:</strong> {{ $order->order_date->format('d.m.Y H:i') }}</p>
                 <p><strong>Дата доставки:</strong> {{ $order->delivery_date->format('d.m.Y') }}</p>
                 <p><strong>Время доставки:</strong> {{ $order->delivery_time_slot }}</p>
@@ -78,14 +87,25 @@
             @endif
         </div>
 
-        @if($order->status === 'pending' && $order->payment_method === 'card')
-            <div class="mt-8">
+        <div class="mt-8 flex gap-4">
+            @if($order->status === 'pending' && $order->payment_method === 'card')
                 <a href="{{ route('card.payment.form', ['order_id' => $order->id]) }}" 
                    class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">
                     Оплатить заказ
                 </a>
-            </div>
-        @endif
+            @endif
+
+            @if($order->status === 'pending' && !$order->delivery_date->isToday())
+                <form action="{{ route('orders.cancel', $order) }}" method="POST" class="inline">
+                    @csrf
+                    <button type="submit" 
+                            class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                            onclick="return confirm('Вы уверены, что хотите отменить заказ?')">
+                        Отменить заказ
+                    </button>
+                </form>
+            @endif
+        </div>
     </div>
 </div>
 @endsection
