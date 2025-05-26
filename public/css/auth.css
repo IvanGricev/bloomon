@@ -76,21 +76,22 @@
     display: block;
     width: 100%;
     padding: 14px;
-    background: #d97c6a;
-    border: none;
-    border-radius: 8px;
-    color: #fff;
+    background: #ffffff;
+    border: 2px solid #d97c6a;
+    color: #d97c6a;
     font-size: 1rem;
     font-weight: 500;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background 0.5s;
     font-family: 'Montserrat', sans-serif;
     margin-top: 10px;
     letter-spacing: 0.03em;
 }
 
 .register-btn:hover {
-    background: #c56b5a;
+    background: #d97c6a;
+    color: white;
+    border-color: #d97c6a;
 }
 
 .alert {

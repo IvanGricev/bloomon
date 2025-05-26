@@ -218,3 +218,8 @@ body {
 .search-btn i {
     font-size: 1.1em;
 }
+.product-card-availability {
+    font-size: 1.08rem;
+    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
+}

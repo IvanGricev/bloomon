@@ -5,40 +5,17 @@
 <div class="container my-5">
     <h1>Профиль пользователя: {{ auth()->user()->name }}</h1>
 
-    <!-- Секция с информацией -->
-    <div class="row my-4">
-        <!-- Общая сумма заказов -->
-        <div class="col-md-6">
-            <h3>Общая сумма ваших заказов:</h3>
-            <p class="lead">
-                {{ number_format(auth()->user()->orders->sum('total_price'), 2, ',', ' ') }} руб.
-            </p>
-        </div>
-        <!-- Отзывы пользователя -->
-        <div class="col-md-6">
-            <h3>Ваши отзывы:</h3>
-            @if(auth()->user()->reviews->isEmpty())
-                <p>У вас пока нет отзывов.</p>
-            @else
-                <ul class="list-group">
-                    @foreach(auth()->user()->reviews as $review)
-                        <li class="list-group-item">
-                            <strong>Товар:</strong> {{ $review->product->name }} <br>
-                            <strong>Оценка:</strong>
-                            @for($i = 1; $i <= $review->rating; $i++)
-                                <span class="text-warning">&#9733;</span>
-                            @endfor
-                            @for($i = 1; $i <= (5 - $review->rating); $i++)
-                                <span class="text-secondary">&#9733;</span>
-                            @endfor
-                            <br>
-                            <p class="mt-2">{{ $review->text }}</p>
-                        </li>
-                    @endforeach
-                </ul>
-            @endif
-        </div>
+     <!-- Кнопки для открытия модальных окон -->
+     <div class="mb-4">
+        <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+            Редактировать профиль
+        </button>
+        <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+            Изменить пароль
+        </button>
     </div>
+
+
 
     <!-- Секция с подписками -->
     <div class="row my-4">
@@ -88,16 +65,41 @@
             </div>
         </div>
     </div>
-
-    <!-- Кнопки для открытия модальных окон -->
-    <div class="mb-4">
-        <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-            Редактировать профиль
-        </button>
-        <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
-            Изменить пароль
-        </button>
+    <!-- Секция с информацией -->
+    <div class="row my-4">
+        <!-- Общая сумма заказов -->
+        <div class="col-md-6">
+            <h3>Общая сумма ваших заказов:</h3>
+            <p class="lead">
+                {{ number_format(auth()->user()->orders->sum('total_price'), 2, ',', ' ') }} руб.
+            </p>
+        </div>
+        <!-- Отзывы пользователя -->
+        <div class="col-md-6">
+            <h3>Ваши отзывы:</h3>
+            @if(auth()->user()->reviews->isEmpty())
+                <p>У вас пока нет отзывов.</p>
+            @else
+                <ul class="list-group">
+                    @foreach(auth()->user()->reviews as $review)
+                        <li class="list-group-item">
+                            <strong>Товар:</strong> {{ $review->product->name }} <br>
+                            <strong>Оценка:</strong>
+                            @for($i = 1; $i <= $review->rating; $i++)
+                                <span class="text-warning">&#9733;</span>
+                            @endfor
+                            @for($i = 1; $i <= (5 - $review->rating); $i++)
+                                <span class="text-secondary">&#9733;</span>
+                            @endfor
+                            <br>
+                            <p class="mt-2">{{ $review->text }}</p>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </div>
     </div>
+   
 
     <!-- Модальное окно для редактирования профиля -->
     <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
