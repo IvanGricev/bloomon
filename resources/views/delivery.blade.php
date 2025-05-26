@@ -14,7 +14,7 @@
             <li>@include('partials.flowicon') Срочная доставка — в течение 2 часов (по договорённости).</li>
             <li>@include('partials.flowicon') Доставка в область — уточняйте условия у менеджера.</li>
             <li>@include('partials.flowicon') Время и адрес согласовываются индивидуально.</li>
-        </ul>
+    </ul>
     </div>
     <div class="delivery-hero-img">
         <img src="/images/idea.jpg" alt="Доставка цветов">

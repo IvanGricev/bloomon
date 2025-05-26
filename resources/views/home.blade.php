@@ -53,7 +53,7 @@
                         <strong>{{ number_format($subscription->price, 2, ',', ' ') }} руб.</strong>
                     </div>
                     <div class="subscription-card__meta">
-                        {{ ucfirst($subscription->period) }} подписка, доставка: {{ $subscription->frequency }}
+                            {{ ucfirst($subscription->period) }} подписка, доставка: {{ $subscription->frequency }}
                     </div>
                 </div>
             </div>
@@ -68,13 +68,13 @@
     <div class="delivery-header">
         <h2 class="delivery-title">Доставка</h2>
         <a href="{{ route('delivery') }}" class="delivery-more-link">Узнать подробнее <span>&#8594;</span></a>
-    </div>
+                    </div>
     <div class="delivery-card">
         <img src="{{ asset('images/delivery.jpg') }}" alt="Доставка цветов">
         <div class="delivery-card__desc">
             <strong>БЫСТРАЯ И БЕРЕЖНАЯ ДОСТАВКА ПО ГОРОДУ И ОБЛАСТИ.</strong><br>
             Мы доставим ваш букет в течение 2 часов после оформления заказа или в удобное для вас время. Наши курьеры заботятся о каждом букете, чтобы он приехал к вам свежим и красивым.
-        </div>
+            </div>
     </div>
 </div>
 

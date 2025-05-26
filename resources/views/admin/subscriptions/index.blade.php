@@ -1,4 +1,5 @@
 @extends('main')
+<link rel="stylesheet" href="{{ asset('css/admin-products.css') }}">
 
 @section('content')
 <div class="container my-5">
