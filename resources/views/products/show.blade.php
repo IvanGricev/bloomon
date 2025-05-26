@@ -2,6 +2,17 @@
 
 @section('content')
 <link rel="stylesheet" href="{{ url('css/product.css') }}">
+<style>
+    /* Скрываем стандартные стрелочки для input type="number" */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+</style>
 <div class="product-container">
     <div class="product-breadcrumbs">
         <a href="/">Главная</a> <span>/</span> <a href="{{ route('products.index') }}">Каталог</a> <span>/</span> <span>{{ $product->name }}</span>
@@ -27,17 +38,20 @@
             <div class="product-description">{{ $product->description }}</div>
             <div class="product-availability">
                 @if($product->quantity > 0)
-                    @if($product->quantity <= 25)
+                    @if($product->quantity <= 20)
                         <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
                             Осталось всего {{ $product->quantity }} {{ trans_choice('товар|товара|товаров', $product->quantity) }}
                         </div>
                     @else
                         <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
                             В наличии
                         </div>
                     @endif
                 @else
                     <div class="alert alert-danger">
+                        <i class="fas fa-times-circle me-2"></i>
                         Нет в наличии
                     </div>
                 @endif
@@ -55,21 +69,31 @@
                             </div>
                             <small class="text-muted">Доступно: {{ $product->quantity }} {{ trans_choice('единица|единицы|единиц', $product->quantity) }}</small>
                         </div>
-                        <button type="submit" class="product-cart-btn">Добавить в корзину</button>
+                        <button type="submit" class="product-cart-btn">
+                            <i class="fas fa-shopping-cart me-2"></i>
+                            Добавить в корзину
+                        </button>
                     </form>
                 @else
-                    <button class="product-cart-btn" disabled>Нет в наличии</button>
+                    <button class="product-cart-btn" disabled>
+                        <i class="fas fa-ban me-2"></i>
+                        Нет в наличии
+                    </button>
                 @endif
             </div>
         </div>
     </div>
     {{-- Рандомные товары --}}
     @php
-        $randomProducts = \App\Models\Product::where('id', '!=', $product->id)->inRandomOrder()->limit(4)->get();
+        $randomProducts = \App\Models\Product::where('id', '!=', $product->id)
+            ->where('quantity', '>', 0)
+            ->inRandomOrder()
+            ->limit(4)
+            ->get();
     @endphp
     @if($randomProducts->count())
         <div class="related-products-section">
-            <div class="related-products-title">Товары</div>
+            <div class="related-products-title">Похожие товары</div>
             <div class="related-products-row">
                 @foreach($randomProducts as $item)
                     <a href="{{ route('products.show', $item->id) }}" class="related-product-card">
@@ -77,6 +101,13 @@
                         <div class="related-product-info">
                             <div class="related-product-name"><b>{{ $item->name }}</b></div>
                             <div class="related-product-price">{{ number_format($item->price, 2, ',', ' ') }} руб.</div>
+                            <div class="related-product-availability">
+                                @if($item->quantity <= 20)
+                                    <span class="text-warning">Осталось {{ $item->quantity }}</span>
+                                @else
+                                    <span class="text-success">В наличии</span>
+                                @endif
+                            </div>
                         </div>
                     </a>
                 @endforeach

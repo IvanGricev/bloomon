@@ -15,23 +15,31 @@ class ProductController extends Controller
     {
         $query = Product::query();
 
-        // Поиск по названию или категории
+        // Поиск по названию
         if ($request->has('search')) {
             $search = $request->get('search');
             $query->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhereHas('category', function($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%");
-                  });
+                  ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
-        // Фильтрация по категориям
+        // Фильтр по категориям
         if ($request->has('categories')) {
             $query->whereIn('category_id', $request->get('categories'));
         }
 
-        $products = $query->get();
+        // Фильтр по наличию
+        if ($request->has('in_stock')) {
+            $query->where('quantity', '>', 0);
+        }
+
+        // Получаем товары с пагинацией
+        $products = $query->with(['images', 'category'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(18);
+
+        // Получаем все категории для фильтров
         $categories = Category::all();
 
         return view('products.index', compact('products', 'categories'));
@@ -40,8 +48,18 @@ class ProductController extends Controller
     // Отображение карточки конкретного товара
     public function show(Product $product)
     {
-        $product->load(['category', 'reviews.user']);
-        return view('products.show', compact('product'));
+        try {
+            // Загружаем все необходимые связи
+            $product->load(['images', 'category', 'reviews.user']);
+            
+            // Проверяем актуальность данных о товаре
+            $product->refresh();
+            
+            return view('products.show', compact('product'));
+        } catch (\Exception $e) {
+            return redirect()->route('products.index')
+                ->with('error', 'Товар не найден');
+        }
     }
 
     // --- Административные методы (требуют проверки прав) ---
@@ -57,19 +75,19 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         try {
-            $data = $request->validated();
+            $product = Product::create($request->validated());
 
-            if ($request->hasFile('photo')) {
-                $path = $request->file('photo')->store('products', 'public');
-                $data['photo'] = $path;
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $path = $image->store('products', 'public');
+                    $product->images()->create(['image_path' => $path]);
+                }
             }
-
-            $product = Product::create($data);
 
             return redirect()->route('products.show', $product)
                 ->with('success', 'Товар успешно создан');
         } catch (\Exception $e) {
-            return back()->with('error', 'Произошла ошибка при создании товара. Пожалуйста, попробуйте снова.');
+            return back()->with('error', 'Ошибка при создании товара: ' . $e->getMessage());
         }
     }
 
@@ -84,22 +102,26 @@ class ProductController extends Controller
     public function update(StoreProductRequest $request, Product $product)
     {
         try {
-            $data = $request->validated();
+            $product->update($request->validated());
 
-            if ($request->hasFile('photo')) {
-                if ($product->photo) {
-                    Storage::disk('public')->delete($product->photo);
+            if ($request->hasFile('images')) {
+                // Удаляем старые изображения
+                foreach ($product->images as $image) {
+                    \Storage::disk('public')->delete($image->image_path);
+                    $image->delete();
                 }
-                $path = $request->file('photo')->store('products', 'public');
-                $data['photo'] = $path;
-            }
 
-            $product->update($data);
+                // Загружаем новые
+                foreach ($request->file('images') as $image) {
+                    $path = $image->store('products', 'public');
+                    $product->images()->create(['image_path' => $path]);
+                }
+            }
 
             return redirect()->route('products.show', $product)
                 ->with('success', 'Товар успешно обновлен');
         } catch (\Exception $e) {
-            return back()->with('error', 'Произошла ошибка при обновлении товара. Пожалуйста, попробуйте снова.');
+            return back()->with('error', 'Ошибка при обновлении товара: ' . $e->getMessage());
         }
     }
 
@@ -107,15 +129,18 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         try {
-            if ($product->photo) {
-                Storage::disk('public')->delete($product->photo);
+            // Удаляем изображения
+            foreach ($product->images as $image) {
+                \Storage::disk('public')->delete($image->image_path);
+                $image->delete();
             }
+
             $product->delete();
 
             return redirect()->route('products.index')
                 ->with('success', 'Товар успешно удален');
         } catch (\Exception $e) {
-            return back()->with('error', 'Произошла ошибка при удалении товара. Пожалуйста, попробуйте снова.');
+            return back()->with('error', 'Ошибка при удалении товара: ' . $e->getMessage());
         }
     }
 }
