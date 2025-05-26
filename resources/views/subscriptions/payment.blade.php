@@ -1,5 +1,7 @@
 @extends('main')
 
+ <link rel="stylesheet" href="{{ asset('css/subscriptions-payment.css') }}">
+
 @section('content')
 <div class="container my-5">
     <div class="row justify-content-center">
@@ -81,7 +83,7 @@
                             </div>
                         </div>
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-accent btn-lg">
+                            <button type="submit" class=" btn-accent btn-lg">
                                 Оплатить {{ number_format($subscription->price, 2, ',', ' ') }} руб.
                             </button>
                             <a href="{{ route('subscriptions.index') }}" class="btn btn-outline-accent">Отмена</a>
@@ -93,41 +95,6 @@
     </div>
 </div>
 
-@push('styles')
-<style>
-    .subscription-summary {
-        background-color: #f8f9fa;
-        padding: 1.5rem;
-        border-radius: 0.5rem;
-    }
-    .form-control:focus {
-        border-color: #d97c6a;
-        box-shadow: 0 0 0 0.2rem rgba(217, 124, 106, 0.25);
-    }
-    .text-accent {
-        color: #d97c6a;
-    }
-    .btn-accent {
-        background-color: #d97c6a;
-        border-color: #d97c6a;
-        color: white;
-    }
-    .btn-accent:hover {
-        background-color: #c56b5a;
-        border-color: #c56b5a;
-        color: white;
-    }
-    .btn-outline-accent {
-        color: #d97c6a;
-        border-color: #d97c6a;
-    }
-    .btn-outline-accent:hover {
-        background-color: #d97c6a;
-        border-color: #d97c6a;
-        color: white;
-    }
-</style>
-@endpush
 
 @push('scripts')
 <script>

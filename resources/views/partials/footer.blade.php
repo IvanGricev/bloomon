@@ -20,7 +20,7 @@
             <ul>
                 <li><a href="{{ route('products.index') }}">Букеты</a></li>
                 <li><a href="{{ route('subscriptions.index') }}">Подписки</a></li>
-                <li><a href="{{ route('blog.index') }}">Блог</a></li>
+                <li><a href="{{ route('ideas') }}">Блог</a></li>
             </ul>
         </div>
     </div>

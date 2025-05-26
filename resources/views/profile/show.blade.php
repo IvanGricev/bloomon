@@ -67,13 +67,7 @@
     </div>
     <!-- Секция с информацией -->
     <div class="row my-4">
-        <!-- Общая сумма заказов -->
-        <div class="col-md-6">
-            <h3>Общая сумма ваших заказов:</h3>
-            <p class="lead">
-                {{ number_format(auth()->user()->orders->sum('total_price'), 2, ',', ' ') }} руб.
-            </p>
-        </div>
+        
         <!-- Отзывы пользователя -->
         <div class="col-md-6">
             <h3>Ваши отзывы:</h3>
@@ -97,6 +91,13 @@
                     @endforeach
                 </ul>
             @endif
+        </div>
+        <!-- Общая сумма заказов -->
+        <div class="col-md-6">
+            <h3>Общая сумма ваших заказов:</h3>
+            <p class="lead">
+                {{ number_format(auth()->user()->orders->sum('total_price'), 2, ',', ' ') }} руб.
+            </p>
         </div>
     </div>
    
