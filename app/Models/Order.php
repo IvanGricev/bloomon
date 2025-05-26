@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
 {
@@ -11,25 +13,29 @@ class Order extends Model
 
     protected $fillable = [
         'user_id',
-        'total_price',
-        'status',
-        'order_date',
+        'delivery_address',
+        'delivery_phone',
         'delivery_date',
         'delivery_time_slot',
         'delivery_preferences',
         'payment_method',
-        'address',
-        'phone'
+        'status',
+        'total_price',
+        'order_date'
     ];
 
-    // Заказ принадлежит пользователю
-    public function user()
+    protected $casts = [
+        'delivery_date' => 'date',
+        'order_date' => 'datetime',
+        'total_price' => 'decimal:2'
+    ];
+
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    // Заказ состоит из нескольких позиций
-    public function orderItems()
+    public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }

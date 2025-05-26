@@ -36,41 +36,91 @@ class OrderController extends Controller
     
     public function show(Order $order)
     {
+        // Проверяем, что заказ принадлежит текущему пользователю
         if ($order->user_id !== Auth::id()) {
-            abort(403);
+            abort(403, 'У вас нет доступа к этому заказу');
         }
 
-        $order->load('items.product');
+        // Загружаем связанные данные
+        $order->load(['items.product', 'items.product.images']);
+
         return view('orders.show', compact('order'));
     }
     
     public function store(StoreOrderRequest $request)
     {
         try {
+            // Получаем корзину из сессии
+            $cart = session()->get('cart', []);
+            
+            // Проверяем, что корзина не пуста
+            if (empty($cart)) {
+                return redirect()->route('cart.index')
+                    ->with('error', 'Ваша корзина пуста');
+            }
+
             DB::beginTransaction();
 
             $data = $request->validated();
             $data['user_id'] = Auth::id();
             $data['status'] = 'pending';
+            $data['order_date'] = now();
+            $data['total_price'] = $request->input('total_price');
+
+            // Проверяем валидность временного слота
+            if (!$this->deliveryTimeService->isValidTimeSlot($data['delivery_date'], $data['delivery_time_slot'])) {
+                return back()->with('error', 'Выбранное время доставки недоступно');
+            }
 
             $order = Order::create($data);
+            
+            // Получаем активные акции
+            $activePromotions = Promotion::active()->with('categories')->get();
 
-            foreach ($data['items'] as $item) {
+            foreach ($cart as $item) {
+                $product = Product::findOrFail($item['id']);
+                
+                // Проверяем доступность товара
+                if (!$product->isAvailable($item['quantity'])) {
+                    throw new \Exception("Товар '{$product->name}' больше недоступен в запрошенном количестве");
+                }
+
+                // Определяем цену с учетом акций
+                $price = $product->price;
+                foreach ($activePromotions as $promo) {
+                    if ($promo->categories->contains($product->category_id)) {
+                        $price = $product->price * ((100 - $promo->discount) / 100);
+                        break;
+                    }
+                }
+
                 OrderItem::create([
                     'order_id' => $order->id,
-                    'product_id' => $item['product_id'],
+                    'product_id' => $product->id,
                     'quantity' => $item['quantity'],
-                    'price' => $item['price'] ?? 0,
+                    'price' => $price,
                 ]);
+
+                // Уменьшаем количество товара
+                $product->decrement('quantity', $item['quantity']);
             }
+
+            // Очищаем корзину
+            session()->forget('cart');
 
             DB::commit();
 
+            // Если выбран способ оплаты картой, перенаправляем на страницу оплаты
+            if ($data['payment_method'] === 'card') {
+                return redirect()->route('card.payment.form', ['order_id' => $order->id]);
+            }
+
             return redirect()->route('orders.show', $order)
-                ->with('success', 'Заказ успешно создан');
+                ->with('success', 'Заказ успешно оформлен');
+
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Произошла ошибка при создании заказа. Пожалуйста, попробуйте снова.');
+            return back()->with('error', 'Ошибка при оформлении заказа: ' . $e->getMessage());
         }
     }
 }
