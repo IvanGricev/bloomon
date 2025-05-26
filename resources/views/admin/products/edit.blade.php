@@ -1,5 +1,7 @@
 @extends('main')
 
+<link rel="stylesheet" href="{{ asset('css/admin-product-edit.css') }}">
+
 @section('content')
 <div class="container my-5">
     <h1>Редактировать товар</h1>
@@ -103,15 +105,5 @@
 </script>
 @endpush
 
-@push('styles')
-<style>
-    .input-group .form-control {
-        text-align: center;
-    }
-    
-    .input-group .btn {
-        width: 40px;
-    }
-</style>
-@endpush
+
 @endsection
