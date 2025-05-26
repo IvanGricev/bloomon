@@ -12,6 +12,125 @@
     input[type="number"] {
         -moz-appearance: textfield;
     }
+
+    /* Стили для отзывов */
+    .reviews-section {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid #eee;
+    }
+    .reviews-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    .reviews-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+    .reviews-count {
+        color: #666;
+    }
+    .review-form {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        margin-bottom: 2rem;
+    }
+    .rating-input {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .rating-input input[type="radio"] {
+        display: none;
+    }
+    .rating-input label {
+        cursor: pointer;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #666;
+        background: #fff;
+        border: 2px solid #ddd;
+        border-radius: 50%;
+        width: 2.5rem;
+        height: 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        position: relative;
+    }
+    .rating-input label:hover,
+    .rating-input label:hover ~ label,
+    .rating-input input[type="radio"]:checked ~ label {
+        color: #fff;
+        background: #ffc107;
+        border-color: #ffc107;
+        transform: scale(1.1);
+    }
+    .rating-input label:hover::after {
+        content: attr(title);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 0.3rem 0.6rem;
+        border-radius: 0.3rem;
+        font-size: 0.875rem;
+        white-space: nowrap;
+        z-index: 1;
+    }
+    .rating-hint {
+        font-size: 0.875rem;
+        color: #666;
+        margin-top: 0.5rem;
+    }
+    .review-item {
+        border-bottom: 1px solid #eee;
+        padding: 1.5rem 0;
+    }
+    .review-item:last-child {
+        border-bottom: none;
+    }
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+    .review-author {
+        font-weight: 600;
+    }
+    .review-date {
+        color: #666;
+        font-size: 0.9rem;
+    }
+    .review-rating {
+        color: #ffc107;
+        margin-bottom: 0.5rem;
+        font-size: 1.2rem;
+    }
+    .review-text {
+        color: #333;
+        line-height: 1.5;
+    }
+    .no-reviews {
+        text-align: center;
+        padding: 2rem;
+        color: #666;
+    }
+    .rating-number {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #ffc107;
+    }
+    .rating-max {
+        font-size: 1rem;
+        color: #666;
+    }
 </style>
 <div class="product-container">
     <div class="product-breadcrumbs">
@@ -114,6 +233,117 @@
             </div>
         </div>
     @endif
+
+    {{-- Секция отзывов --}}
+    <div class="reviews-section">
+        <div class="reviews-header">
+            <div>
+                <h2 class="reviews-title">Отзывы</h2>
+                <div class="reviews-count">
+                    {{ $product->reviews->count() }} {{ trans_choice('отзыв|отзыва|отзывов', $product->reviews->count()) }}
+                </div>
+            </div>
+            @if($product->reviews->isNotEmpty())
+                <div class="average-rating">
+                    <div class="h4 mb-0">
+                        {{ number_format($product->reviews->avg('rating'), 1) }}
+                    </div>
+                    <div class="text-warning">
+                        @for($i = 1; $i <= 5; $i++)
+                            @if($i <= round($product->reviews->avg('rating')))
+                                <i class="fas fa-star"></i>
+                            @else
+                                <i class="far fa-star"></i>
+                            @endif
+                        @endfor
+                    </div>
+                </div>
+            @endif
+        </div>
+
+        {{-- Форма добавления отзыва --}}
+        @auth
+            <div class="review-form">
+                <h3 class="h5 mb-3">Оставить отзыв</h3>
+                <form action="{{ route('reviews.store', $product->id) }}" method="POST">
+                    @csrf
+                    <div class="mb-3">
+                        <label class="form-label">Ваша оценка</label>
+                        <div class="rating-input">
+                            @for($i = 5; $i >= 1; $i--)
+                                <input type="radio" name="rating" value="{{ $i }}" id="rating{{ $i }}" required>
+                                <label for="rating{{ $i }}" title="{{ $i }} {{ trans_choice('балл|балла|баллов', $i) }}">
+                                    {{ $i }}
+                                </label>
+                            @endfor
+                        </div>
+                        <div class="rating-hint mt-1">
+                            <small class="text-muted">Наведите на цифру, чтобы увидеть оценку</small>
+                        </div>
+                        @error('rating')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="mb-3">
+                        <label for="review-text" class="form-label">Ваш отзыв</label>
+                        <textarea name="text" id="review-text" 
+                                class="form-control @error('text') is-invalid @enderror" 
+                                rows="4" 
+                                placeholder="Расскажите о вашем опыте использования товара..." 
+                                required></textarea>
+                        @error('text')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <button type="submit" class="btn btn-accent">
+                        <i class="fas fa-paper-plane me-2"></i>
+                        Отправить отзыв
+                    </button>
+                </form>
+            </div>
+        @else
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                Чтобы оставить отзыв, пожалуйста, <a href="{{ route('login') }}">войдите</a> в свой аккаунт
+            </div>
+        @endauth
+
+        {{-- Список отзывов --}}
+        @if($product->reviews->isNotEmpty())
+            <div class="reviews-list">
+                @foreach($product->reviews as $review)
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="review-author">{{ $review->user->name }}</div>
+                            <div class="review-date">{{ $review->created_at->format('d.m.Y') }}</div>
+                        </div>
+                        <div class="review-rating">
+                            <span class="rating-number">{{ $review->rating }}</span>
+                            <span class="rating-max">/5</span>
+                        </div>
+                        <div class="review-text">{{ $review->text }}</div>
+                        @if(auth()->id() === $review->user_id)
+                            <div class="mt-2">
+                                <form action="{{ route('reviews.destroy', $review->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                            onclick="return confirm('Вы уверены, что хотите удалить этот отзыв?')">
+                                        <i class="fas fa-trash-alt"></i> Удалить
+                                    </button>
+                                </form>
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <div class="no-reviews">
+                <i class="far fa-comment-dots fa-3x mb-3"></i>
+                <p>Пока нет отзывов. Будьте первым, кто оставит отзыв!</p>
+            </div>
+        @endif
+    </div>
 </div>
 
 @push('scripts')

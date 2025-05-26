@@ -50,7 +50,9 @@ class ProductController extends Controller
     {
         try {
             // Загружаем все необходимые связи
-            $product->load(['images', 'category', 'reviews.user']);
+            $product->load(['images', 'category', 'reviews' => function($query) {
+                $query->with('user')->latest();
+            }]);
             
             // Проверяем актуальность данных о товаре
             $product->refresh();

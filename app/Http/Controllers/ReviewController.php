@@ -21,7 +21,7 @@ class ReviewController extends Controller
 
             return back()->with('success', 'Отзыв успешно добавлен');
         } catch (\Exception $e) {
-            return back()->with('error', 'Произошла ошибка при добавлении отзыва. Пожалуйста, попробуйте снова.');
+            return back()->with('error', 'Произошла ошибка при добавлении отзыва: ' . $e->getMessage());
         }
     }
 
@@ -36,7 +36,7 @@ class ReviewController extends Controller
 
             return back()->with('success', 'Отзыв успешно удален');
         } catch (\Exception $e) {
-            return back()->with('error', 'Произошла ошибка при удалении отзыва. Пожалуйста, попробуйте снова.');
+            return back()->with('error', 'Произошла ошибка при удалении отзыва: ' . $e->getMessage());
         }
     }
 }

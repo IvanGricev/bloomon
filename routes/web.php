@@ -89,7 +89,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/bouquet-builder', [BouquetBuilderController::class, 'store'])->name('bouquet-builder.store');
 
     // Отзывы к товарам
-    Route::post('/products/{id}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::post('/products/{product}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 
     // Подписки
     Route::get('/profile/subscriptions', [SubscriptionController::class, 'profileIndex'])->name('profile.subscriptions');
