@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: #ffffff;
+}
+
+
+
+h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    color: #d97c6a;
+    font-size: 2rem;
+    margin-bottom: 2.5rem;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+label.form-label {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: #d97c6a;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+input[type="text"], textarea, input[type="file"] {
+    width: 100%;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.08rem;
+    border: 1.5px solid #f0e6e3;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.5rem;
+    background: #f8f9fb;
+    color: #222;
+    transition: border-color 0.2s;
+}
+input[type="text"]:focus, textarea:focus, input[type="file"]:focus {
+    border-color: #d97c6a;
+    outline: none;
+}
+
+textarea {
+    min-height: 160px;
+    resize: vertical;
+}
+
+button[type="submit"], .btn-primary {
+    background: #d97c6a;
+    color: #fff;
+    border: none;
+    border-radius: 0px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.8rem 2.2rem;
+    margin-right: 1rem;
+    margin-top: 0.5rem;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(217,124,106,0.08);
+}
+button[type="submit"]:hover, .btn-primary:hover {
+    background: #b85c4a;
+}
+
+.btn-secondary, a.btn-secondary {
+    background: #fff0ee;
+    color: #d97c6a;
+    border: none;
+    border-radius: 0px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 0.8rem 2.2rem;
+    margin-top: 0.5rem;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+}
+.btn-secondary:hover, a.btn-secondary:hover {
+    background: #d97c6a;
+    color: #fff;
+}
+
+.alert-danger {
+    background: #fff0ee;
+    color: #d97c6a;
+    border: 1.5px solid #f8d3c7;
+    border-radius: 10px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.05rem;
+}
+
+.mt-2 img {
+    display: block;
+    margin: 0.5rem 0 0 0;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(217,124,106,0.10);
+    max-width: 220px;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.mt-2 img:hover {
+    box-shadow: 0 6px 24px rgba(217,124,106,0.18);
+    transform: scale(1.03);
+}
+
+@media (max-width: 700px) {
+    .container {
+        padding: 1.2rem 0.5rem;
+        max-width: 98vw;
+    }
+    h1 { font-size: 1.2rem; }
+    button[type="submit"], .btn-primary, .btn-secondary, a.btn-secondary {
+        font-size: 1rem;
+        padding: 0.7rem 1.2rem;
+    }
+    .mt-2 img { max-width: 98vw; }
+} 
