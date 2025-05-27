@@ -1,5 +1,5 @@
 @extends('main')
-
+<link rel="stylesheet" href="{{ asset('css/support-show.css') }}">
 @section('content')
 <div class="container my-5">
     <div class="row">
@@ -16,57 +16,23 @@
                 <div class="card-body">
                     <div class="ticket-messages">
                         <!-- Первое сообщение (создание тикета) -->
-                        <div class="message mb-4">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <strong>{{ $ticket->user->name }}</strong>
-                                    <small class="text-muted ms-2">{{ $ticket->created_at->format('d.m.Y H:i') }}</small>
-                                </div>
+                        <div class="message-row user">
+                            <div class="message-avatar" style="display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.3rem;color:#d97c6a;background:#fff0ee;">
+                                {{ mb_substr($ticket->user->name,0,1) }}
                             </div>
-                            <div class="message-content mt-2">
-                                {{-- $ticket->message убрано, так как тикет больше не содержит это поле --}}
-                            </div>
-                            @if($ticket->attachments->isNotEmpty())
-                                <div class="attachments mt-2">
-                                    @foreach($ticket->attachments as $attachment)
-                                        @if(str_starts_with($attachment->mime_type, 'image/'))
-                                            <div class="attachment-image mb-2">
-                                                <a href="{{ asset('storage/' . $attachment->file_path) }}" 
-                                                   target="_blank" 
-                                                   class="image-preview">
-                                                    <img src="{{ asset('storage/' . $attachment->file_path) }}" 
-                                                         alt="{{ $attachment->original_name }}"
-                                                         class="img-thumbnail"
-                                                         style="max-width: 200px; max-height: 200px;">
-                                                </a>
-                                            </div>
-                                        @else
-                                            <a href="{{ asset('storage/' . $attachment->file_path) }}" 
-                                               target="_blank" 
-                                               class="btn btn-sm btn-outline-secondary me-2">
-                                                <i class="fas fa-paperclip"></i> {{ $attachment->original_name }}
-                                            </a>
-                                        @endif
-                                    @endforeach
-                                </div>
-                            @endif
-                        </div>
-
-                        <!-- Последующие сообщения -->
-                        @foreach($messages as $message)
-                            <div class="message mb-4">
+                            <div class="message user">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div>
-                                        <strong>{{ $message->user->name }}</strong>
-                                        <small class="text-muted ms-2">{{ $message->created_at->format('d.m.Y H:i') }}</small>
+                                        <strong>{{ $ticket->user->name }}</strong>
+                                        <small class="text-muted ms-2">{{ $ticket->created_at->format('d.m.Y H:i') }}</small>
                                     </div>
                                 </div>
                                 <div class="message-content mt-2">
-                                    {{ $message->message }}
+                                    {{-- $ticket->message убрано, так как тикет больше не содержит это поле --}}
                                 </div>
-                                @if($message->attachments->isNotEmpty())
+                                @if($ticket->attachments->isNotEmpty())
                                     <div class="attachments mt-2">
-                                        @foreach($message->attachments as $attachment)
+                                        @foreach($ticket->attachments as $attachment)
                                             @if(str_starts_with($attachment->mime_type, 'image/'))
                                                 <div class="attachment-image mb-2">
                                                     <a href="{{ asset('storage/' . $attachment->file_path) }}" 
@@ -88,6 +54,50 @@
                                         @endforeach
                                     </div>
                                 @endif
+                            </div>
+                        </div>
+
+                        <!-- Последующие сообщения -->
+                        @foreach($messages as $message)
+                            <div class="message-row user">
+                                <div class="message-avatar" style="display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.3rem;color:#d97c6a;background:#fff0ee;">
+                                    {{ mb_substr($message->user->name,0,1) }}
+                                </div>
+                                <div class="message user">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <strong>{{ $message->user->name }}</strong>
+                                            <small class="text-muted ms-2">{{ $message->created_at->format('d.m.Y H:i') }}</small>
+                                        </div>
+                                    </div>
+                                    <div class="message-content mt-2">
+                                        {{ $message->message }}
+                                    </div>
+                                    @if($message->attachments->isNotEmpty())
+                                        <div class="attachments mt-2">
+                                            @foreach($message->attachments as $attachment)
+                                                @if(str_starts_with($attachment->mime_type, 'image/'))
+                                                    <div class="attachment-image mb-2">
+                                                        <a href="{{ asset('storage/' . $attachment->file_path) }}" 
+                                                           target="_blank" 
+                                                           class="image-preview">
+                                                            <img src="{{ asset('storage/' . $attachment->file_path) }}" 
+                                                                 alt="{{ $attachment->original_name }}"
+                                                                 class="img-thumbnail"
+                                                                 style="max-width: 200px; max-height: 200px;">
+                                                        </a>
+                                                    </div>
+                                                @else
+                                                    <a href="{{ asset('storage/' . $attachment->file_path) }}" 
+                                                       target="_blank" 
+                                                       class="btn btn-sm btn-outline-secondary me-2">
+                                                        <i class="fas fa-paperclip"></i> {{ $attachment->original_name }}
+                                                    </a>
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         @endforeach
                     </div>
@@ -140,39 +150,4 @@
     </div>
 </div>
 
-@push('styles')
-<style>
-    .message {
-        padding: 1rem;
-        border-radius: 0.5rem;
-        background-color: #f8f9fa;
-    }
-
-    .message-content {
-        white-space: pre-wrap;
-    }
-
-    .attachments {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-
-    .attachment-image {
-        position: relative;
-    }
-
-    .attachment-image img {
-        transition: transform 0.2s;
-    }
-
-    .attachment-image img:hover {
-        transform: scale(1.05);
-    }
-
-    .image-preview {
-        display: inline-block;
-    }
-</style>
-@endpush
 @endsection 

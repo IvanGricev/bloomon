@@ -1,0 +1,260 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: #f8f9fb;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 90vh;
+}
+
+.card {
+    width: 1000px;
+    border-radius: 22px;
+    box-shadow: 0 6px 32px rgba(217,124,106,0.10), 0 1.5px 6px rgba(0,0,0,0.03);
+    border: none;
+    background: #fff;
+}
+
+.card-header {
+    background: #fff0ee;
+    border-radius: 22px 22px 0 0;
+    border-bottom: 1.5px solid #f8d3c7;
+    padding: 1.5rem 2rem;
+}
+
+.card-header h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    color: #d97c6a;
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+.badge {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 8px;
+    padding: 0.4em 1.1em;
+}
+.bg-primary { background: #d97c6a !important; color: #fff !important; }
+.bg-warning { background: #ffe16b !important; color: #b47b00 !important; }
+.bg-success { background: #70ec72 !important; color: #1b5e20 !important; }
+.bg-secondary { background: #f0f0f0 !important; color: #888 !important; }
+
+.card-body {
+    padding: 2rem 2rem 1.5rem 2rem;
+}
+
+.ticket-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    max-width: 75%;
+    padding: 1.1rem 1.4rem;
+    border-radius: 18px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.08rem;
+    line-height: 1.6;
+    box-shadow: 0 2px 12px rgba(217,124,106,0.08);
+    background: #f8f9fb;
+    color: #222;
+    position: relative;
+}
+
+.message .message-content {
+    margin-top: 0.5rem;
+    margin-bottom: 0.2rem;
+}
+
+/* Определяем кто пишет: пользователь или оператор */
+.message strong {
+    color: #d97c6a;
+    font-weight: 700;
+}
+
+.message.user {
+    align-self: flex-start;
+    background: #fff0ee;
+    color: #d97c6a;
+    border-bottom-left-radius: 4px;
+    border-top-right-radius: 22px;
+    border-top-left-radius: 22px;
+    border-bottom-right-radius: 22px;
+}
+
+.message.operator {
+    align-self: flex-end;
+    background: #d97c6a;
+    color: #fff;
+    border-bottom-right-radius: 4px;
+    border-top-left-radius: 22px;
+    border-top-right-radius: 22px;
+    border-bottom-left-radius: 22px;
+}
+
+.message .text-muted {
+    color: #aaa !important;
+    font-size: 0.95rem;
+    margin-left: 0.5em;
+}
+
+.attachments {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+}
+.attachment-image img {
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(217,124,106,0.10);
+    max-width: 160px;
+    max-height: 160px;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.attachment-image img:hover {
+    box-shadow: 0 6px 24px rgba(217,124,106,0.18);
+    transform: scale(1.03);
+}
+
+.btn, .btn-outline-secondary, .btn-secondary, .btn-primary {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    border-radius: 10px;
+    font-size: 1.08rem;
+    padding: 0.7rem 1.7rem;
+    transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.btn-primary {
+    background: #d97c6a;
+    color: #fff;
+    border: none;
+}
+.btn-primary:hover {
+    background: #b85c4a;
+}
+.btn-secondary, .btn-outline-secondary {
+    background: #fff0ee;
+    color: #d97c6a;
+    border: none;
+}
+.btn-secondary:hover, .btn-outline-secondary:hover {
+    background: #d97c6a;
+    color: #fff;
+}
+
+.form-label {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: #d97c6a;
+    margin-bottom: 0.5rem;
+}
+.form-control {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.08rem;
+    border: 1.5px solid #f0e6e3;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    background: #f8f9fb;
+    color: #222;
+    transition: border-color 0.2s;
+}
+.form-control:focus {
+    border-color: #d97c6a;
+    outline: none;
+}
+.form-text {
+    color: #b47b00;
+    font-size: 0.95rem;
+    margin-top: 0.2rem;
+}
+.invalid-feedback {
+    color: #a30000;
+    font-size: 0.98rem;
+    margin-top: 0.2rem;
+}
+.alert-info {
+    background: #f8f9fb;
+    color: #888;
+    border-radius: 10px;
+    border: 1.5px solid #f0e6e3;
+    padding: 1rem 1.5rem;
+    margin-top: 1.5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.05rem;
+}
+
+.message-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+.message-row.user {
+    flex-direction: row;
+}
+.message-row.operator {
+    flex-direction: row-reverse;
+}
+.message-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(217,124,106,0.10);
+    background: #f8f9fb;
+    border: 2px solid #fff0ee;
+}
+
+@media (max-width: 700px) {
+    body {
+        align-items: flex-start;
+        min-height: unset;
+        display: block;
+    }
+    .container {
+        min-height: unset;
+        display: block;
+        margin-top: 20px;
+    }
+    .container, .card-body, .card-header {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+    .container {
+        max-width: 99vw;
+    }
+    .card-header h2 {
+        font-size: 1.05rem;
+    }
+    .message {
+        font-size: 0.98rem;
+        padding: 0.7rem 1rem;
+    }
+    .btn, .btn-outline-secondary, .btn-secondary, .btn-primary {
+        font-size: 1rem;
+        padding: 0.7rem 1.2rem;
+    }
+    .attachment-image img {
+        max-width: 98vw;
+    }
+    .message-avatar {
+        width: 32px;
+        height: 32px;
+    }
+    .message-row { gap: 0.5rem; }
+}
