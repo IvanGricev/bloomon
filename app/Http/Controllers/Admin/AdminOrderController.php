@@ -11,28 +11,29 @@ class AdminOrderController extends Controller
     // Список всех заказов
     public function index()
     {
-        $orders = Order::with(['items', 'user'])->orderBy('order_date', 'desc')->get();
+        $orders = Order::with(['user', 'items'])->latest()->get();
         return view('admin.orders.index', compact('orders'));
     }
 
     // Детали заказа
     public function show($id)
     {
-        $order = Order::with(['items.product', 'user'])->findOrFail($id);
+        $order = Order::with(['user', 'items'])->findOrFail($id);
         return view('admin.orders.show', compact('order'));
     }
 
     // Обновление статуса заказа
-    public function update(Request $request, $id)
+    public function updateStatus(Request $request, $id)
     {
         $order = Order::findOrFail($id);
-        $request->validate([
-            'status' => 'required|string'
+        
+        $validated = $request->validate([
+            'status' => 'required|in:pending,processing,completed,cancelled'
         ]);
-        $order->update([
-            'status' => $request->status
-        ]);
-        return redirect()->route('admin.orders.index')->with('success', 'Статус заказа обновлён.');
+
+        $order->update($validated);
+
+        return redirect()->back()->with('success', 'Статус заказа успешно обновлен');
     }
 
     // Удаление заказа
@@ -40,6 +41,6 @@ class AdminOrderController extends Controller
     {
         $order = Order::findOrFail($id);
         $order->delete();
-        return redirect()->route('admin.orders.index')->with('success', 'Заказ удалён.');
+        return redirect()->route('admin.orders.index')->with('success', 'Заказ успешно удален');
     }
 }

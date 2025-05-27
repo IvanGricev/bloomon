@@ -43,6 +43,7 @@
                             <th>Дата</th>
                             <th>Сумма</th>
                             <th>Статус</th>
+                            <th>Действия</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,7 +52,21 @@
                                 <td>{{ $order->id }}</td>
                                 <td>{{ $order->order_date->format('d.m.Y') }}</td>
                                 <td>{{ number_format($order->total_price, 2, ',', ' ') }} руб.</td>
-                                <td>{{ $order->status }}</td>
+                                <td>
+                                    <form action="{{ route('admin.orders.status', $order->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                                            <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Ожидает</option>
+                                            <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>В обработке</option>
+                                            <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Завершен</option>
+                                            <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Отменен</option>
+                                        </select>
+                                    </form>
+                                </td>
+                                <td>
+                                    <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-sm btn-info">Просмотр</a>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -74,14 +89,28 @@
                             <th>Название</th>
                             <th>Статус</th>
                             <th>Дата окончания</th>
+                            <th>Действия</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($user->subscriptions as $subscription)
                             <tr>
                                 <td>{{ $subscription->name }}</td>
-                                <td>{{ $subscription->pivot->status }}</td>
+                                <td>
+                                    <form action="{{ route('admin.users.subscriptions.status', ['userId' => $user->id, 'subscriptionId' => $subscription->id]) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                                            <option value="active" {{ $subscription->pivot->status == 'active' ? 'selected' : '' }}>Активна</option>
+                                            <option value="paused" {{ $subscription->pivot->status == 'paused' ? 'selected' : '' }}>Приостановлена</option>
+                                            <option value="cancelled" {{ $subscription->pivot->status == 'cancelled' ? 'selected' : '' }}>Отменена</option>
+                                        </select>
+                                    </form>
+                                </td>
                                 <td>{{ $subscription->pivot->subscription_end_date->format('d.m.Y') }}</td>
+                                <td>
+                                    <a href="{{ route('admin.subscriptions.show', $subscription->id) }}" class="btn btn-sm btn-info">Просмотр</a>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -105,6 +134,7 @@
                             <th>Тема</th>
                             <th>Статус</th>
                             <th>Дата создания</th>
+                            <th>Действия</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -114,6 +144,9 @@
                                 <td>{{ $ticket->subject }}</td>
                                 <td>{{ $ticket->status }}</td>
                                 <td>{{ $ticket->created_at->format('d.m.Y H:i') }}</td>
+                                <td>
+                                    <a href="{{ route('admin.support.show', $ticket->id) }}" class="btn btn-sm btn-info">Просмотр</a>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

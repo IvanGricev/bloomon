@@ -71,7 +71,7 @@
             <h4>Управление заказом</h4>
         </div>
         <div class="card-body">
-            <form action="{{ route('admin.orders.update', $order->id) }}" method="POST">
+            <form action="{{ route('admin.orders.status', $order->id) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="mb-3">
@@ -84,7 +84,7 @@
                         <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>Отменен</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Обновить статус</button>
+                <button type="submit" class="btn btn-primary">Сохранить</button>
             </form>
         </div>
     </div>

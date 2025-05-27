@@ -22,6 +22,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\AdminSubscriptionController;
 use App\Http\Controllers\SupportController;
 use App\Http\Controllers\Admin\AdminSupportController;
+use App\Http\Controllers\Admin\AdminReviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -140,7 +141,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Управление заказами
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('orders.show');
-    Route::put('/orders/{id}', [AdminOrderController::class, 'update'])->name('orders.update');
+    Route::put('/orders/{id}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.status');
     Route::delete('/orders/{id}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
 
     // Управление товарами
@@ -154,25 +155,39 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/products/{id}/quantity', [AdminProductController::class, 'quickUpdateQuantity'])->name('products.quantity.update');
 
     // Управление пользователями
-    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
-    Route::get('/users/{id}', [AdminUserController::class, 'show'])->name('users.show');
-    Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
-    Route::post('/users/{id}/restore', [AdminUserController::class, 'restore'])->name('users.restore');
+    Route::controller(AdminUserController::class)->group(function () {
+        Route::get('/users', 'index')->name('users.index');
+        Route::get('/users/{id}', 'show')->name('users.show');
+        Route::put('/users/{id}', 'update')->name('users.update');
+        Route::delete('/users/{id}', 'destroy')->name('users.destroy');
+        Route::post('/users/{id}/restore', 'restore')->name('users.restore');
+        Route::put('/users/{userId}/subscriptions/{subscriptionId}/status', 'updateSubscriptionStatus')->name('users.subscriptions.status');
+    });
 
     // Управление акциями
     Route::resource('promotions', AdminPromotionController::class);
 
-    // Админские подписки
-    Route::get('subscriptions', [AdminSubscriptionController::class, 'index'])->name('subscriptions.index');
-    Route::get('subscriptions/create', [AdminSubscriptionController::class, 'create'])->name('subscriptions.create');
-    Route::post('subscriptions', [AdminSubscriptionController::class, 'store'])->name('subscriptions.store');
-    Route::get('subscriptions/{id}/edit', [AdminSubscriptionController::class, 'edit'])->name('subscriptions.edit');
-    Route::put('subscriptions/{id}', [AdminSubscriptionController::class, 'update'])->name('subscriptions.update');
-    Route::delete('subscriptions/{id}', [AdminSubscriptionController::class, 'destroy'])->name('subscriptions.destroy');
+    // Управление подписками
+    Route::get('/subscriptions', [AdminSubscriptionController::class, 'index'])->name('subscriptions.index');
+    Route::get('/subscriptions/create', [AdminSubscriptionController::class, 'create'])->name('subscriptions.create');
+    Route::post('/subscriptions', [AdminSubscriptionController::class, 'store'])->name('subscriptions.store');
+    Route::get('/subscriptions/{id}', [AdminSubscriptionController::class, 'show'])->name('subscriptions.show');
+    Route::get('/subscriptions/{id}/edit', [AdminSubscriptionController::class, 'edit'])->name('subscriptions.edit');
+    Route::put('/subscriptions/{id}', [AdminSubscriptionController::class, 'update'])->name('subscriptions.update');
+    Route::delete('/subscriptions/{id}', [AdminSubscriptionController::class, 'destroy'])->name('subscriptions.destroy');
 
-    // Маршруты для управления поддержкой
+    // Управление поддержкой
     Route::get('/support', [AdminSupportController::class, 'index'])->name('support.index');
     Route::get('/support/{ticket}', [AdminSupportController::class, 'show'])->name('support.show');
     Route::post('/support/{ticket}/status', [AdminSupportController::class, 'updateStatus'])->name('support.status.update');
     Route::post('/support/{ticket}/message', [AdminSupportController::class, 'storeMessage'])->name('support.message.store');
+
+    // Маршруты для управления заказами
+    Route::put('/orders/{id}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.status');
+
+    // Маршруты для управления отзывами
+    Route::get('/reviews', [AdminReviewController::class, 'index'])->name('reviews.index');
+    Route::get('/reviews/{id}', [AdminReviewController::class, 'show'])->name('reviews.show');
+    Route::put('/reviews/{id}', [AdminReviewController::class, 'update'])->name('reviews.update');
+    Route::delete('/reviews/{id}', [AdminReviewController::class, 'destroy'])->name('reviews.destroy');
 });

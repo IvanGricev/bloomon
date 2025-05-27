@@ -68,6 +68,18 @@ class AdminSubscriptionController extends Controller
     }
 
     /**
+     * Отображение деталей подписки.
+     */
+    public function show($id)
+    {
+        $subscription = Subscription::with(['users' => function($query) {
+            $query->withPivot('status', 'subscription_end_date', 'last_payment_date');
+        }])->findOrFail($id);
+        
+        return view('admin.subscriptions.show', compact('subscription'));
+    }
+
+    /**
      * Форма редактирования подписки.
      */
     public function edit($id)
