@@ -18,7 +18,6 @@
                         <th>ID</th>
                         <th>Пользователь</th>
                         <th>Тема</th>
-                        <th>Сообщение</th>
                         <th>Статус</th>
                         <th>Создан</th>
                         <th>Действия</th>
@@ -30,7 +29,6 @@
                             <td>{{ $ticket->id }}</td>
                             <td>{{ $ticket->user->name }}</td>
                             <td>{{ $ticket->subject }}</td>
-                            <td>{{ Str::limit($ticket->message, 20) }}</td>
                             <td>
                                 <span class="badge bg-{{ $ticket->status === 'new' ? 'primary' : 
                                     ($ticket->status === 'in_progress' ? 'warning' : 

@@ -29,10 +29,11 @@ class SupportController extends Controller
     {
         try {
             $data = $request->validated();
-            $data['user_id'] = Auth::id();
-            $data['status'] = 'open';
-
-            $ticket = SupportTicket::create($data);
+            $ticket = SupportTicket::create([
+                'user_id' => Auth::id(),
+                'subject' => $data['subject'],
+                'status' => 'new',
+            ]);
 
             // Create initial message
             $message = $ticket->messages()->create([
@@ -45,7 +46,12 @@ class SupportController extends Controller
                 foreach ($request->file('attachments') as $file) {
                     $path = $file->store('support/attachments', 'public');
                     $message->attachments()->create([
+                        'ticket_id' => $ticket->id,
+                        'message_id' => $message->id,
                         'file_path' => $path,
+                        'original_name' => $file->getClientOriginalName(),
+                        'mime_type' => $file->getMimeType(),
+                        'size' => $file->getSize()
                     ]);
                 }
             }
@@ -53,6 +59,8 @@ class SupportController extends Controller
             return redirect()->route('support.show', $ticket)
                 ->with('success', 'Обращение успешно создано');
         } catch (\Exception $e) {
+            \Log::error('Error creating support ticket: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
             return back()->with('error', 'Произошла ошибка при создании обращения. Пожалуйста, попробуйте снова.');
         }
     }
@@ -85,13 +93,20 @@ class SupportController extends Controller
                 foreach ($request->file('attachments') as $file) {
                     $path = $file->store('support/attachments', 'public');
                     $message->attachments()->create([
+                        'ticket_id' => $ticket->id,
+                        'message_id' => $message->id,
                         'file_path' => $path,
+                        'original_name' => $file->getClientOriginalName(),
+                        'mime_type' => $file->getMimeType(),
+                        'size' => $file->getSize()
                     ]);
                 }
             }
 
             return back()->with('success', 'Сообщение успешно отправлено');
         } catch (\Exception $e) {
+            \Log::error('Error storing support message: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
             return back()->with('error', 'Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте снова.');
         }
     }

@@ -24,7 +24,7 @@
                                 </div>
                             </div>
                             <div class="message-content mt-2">
-                                {{ $ticket->message }}
+                                {{-- $ticket->message убрано, так как тикет больше не содержит это поле --}}
                             </div>
                             @if($ticket->attachments->isNotEmpty())
                                 <div class="attachments mt-2">

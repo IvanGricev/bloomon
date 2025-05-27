@@ -19,7 +19,7 @@
                 <thead>
                     <tr>
                         <th>Тема</th>
-                        <th>Сообщение</th>
+                        {{-- <th>Сообщение</th> --}}
                         <th>Статус</th>
                         <th>Создан</th>
                         <th>Действия</th>
@@ -29,7 +29,7 @@
                     @foreach($tickets as $ticket)
                         <tr>
                             <td>{{ $ticket->subject }}</td>
-                            <td>{{ Str::limit($ticket->message, 20) }}</td>
+                            {{-- <td>{{ Str::limit($ticket->message, 20) }}</td> --}}
                             <td>
                                 <span class="badge bg-{{ $ticket->status === 'new' ? 'primary' : 
                                     ($ticket->status === 'in_progress' ? 'warning' : 
