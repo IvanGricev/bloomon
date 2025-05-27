@@ -39,4 +39,15 @@ class BlogController extends Controller
 
         return redirect()->back()->with('success', 'Запись блога успешно создана!');
     }
+
+    public function show(BlogPost $post)
+    {
+        return view('blog.show', compact('post'));
+    }
+
+    public function create()
+    {
+        abort_unless(auth()->user() && auth()->user()->role === 'admin', 403);
+        return view('blog.create');
+    }
 }

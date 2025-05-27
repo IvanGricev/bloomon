@@ -17,6 +17,9 @@
           <a class="nav-link" href="{{ route('products.index') }}">Каталог</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="{{ route('blog.index') }}">Блог</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="{{ route('ideas') }}">Идеи</a>
         </li>
         <li class="nav-item">
