@@ -1,5 +1,5 @@
 @extends('main')
-
+<link rel="stylesheet" href="{{ asset('css/admin-products.css') }}">
 @section('content')
     <h1>Управление заказами</h1>
     <table class="table">

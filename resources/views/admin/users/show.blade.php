@@ -162,13 +162,13 @@
         @if($user->deleted_at)
             <form action="{{ route('admin.users.restore', $user->id) }}" method="POST" class="d-inline">
                 @csrf
-                <button type="submit" class="btn btn-success">Восстановить пользователя</button>
+                <button type="submit" class="btn btn-primary">Восстановить пользователя</button>
             </form>
         @else
             <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn btn-danger" onclick="return confirm('Вы уверены, что хотите удалить этого пользователя?')">Удалить пользователя</button>
+                <button type="submit" class="btn btn-primary" onclick="return confirm('Вы уверены, что хотите удалить этого пользователя?')">Удалить пользователя</button>
             </form>
         @endif
     </div>
