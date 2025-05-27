@@ -1,4 +1,5 @@
 @extends('main')
+<link rel="stylesheet" href="/css/blog-create.css">
 @section('content')
 <div class="container my-5">
     <h1 class="mb-4">Добавить пост в блог</h1>
