@@ -50,4 +50,35 @@ class BlogController extends Controller
         abort_unless(auth()->user() && auth()->user()->role === 'admin', 403);
         return view('blog.create');
     }
+
+    public function edit(BlogPost $post)
+    {
+        abort_unless(auth()->user() && auth()->user()->role === 'admin', 403);
+        return view('blog.edit', compact('post'));
+    }
+
+    public function update(Request $request, BlogPost $post)
+    {
+        abort_unless(auth()->user() && auth()->user()->role === 'admin', 403);
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'body'  => 'required|string',
+            'image' => 'nullable|image|max:2048',
+        ]);
+
+        $filename = $post->image;
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/blog'), $filename);
+        }
+
+        $post->update([
+            'title' => $validated['title'],
+            'body'  => $validated['body'],
+            'image' => $filename,
+        ]);
+
+        return redirect()->route('blog.index')->with('success', 'Пост успешно обновлён!');
+    }
 }

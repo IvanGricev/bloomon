@@ -56,8 +56,10 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Маршруты для блога
 Route::get('/blog/create', [BlogController::class, 'create'])->middleware('auth')->name('blog.create');
-Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::post('/blog', [BlogController::class, 'store'])->name('blog.store');
+Route::get('/blog/{post}/edit', [BlogController::class, 'edit'])->middleware('auth')->name('blog.edit');
+Route::put('/blog/{post}', [BlogController::class, 'update'])->middleware('auth')->name('blog.update');
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{post}', [BlogController::class, 'show'])->name('blog.show');
 
 // Маршруты для товаров

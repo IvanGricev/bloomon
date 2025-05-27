@@ -25,7 +25,14 @@
                             <button class="btn btn-link p-0 mt-2 show-more-btn" data-post-id="{{ $post->id }}">Читать далее</button>
                         @endif
                     </div>
-                    <div class="card-footer text-muted small">{{ $post->created_at->format('d.m.Y H:i') }}</div>
+                    <div class="card-footer text-muted small d-flex justify-content-between align-items-center">
+                        <span>{{ $post->created_at->format('d.m.Y H:i') }}</span>
+                        @auth
+                            @if(auth()->user()->role === 'admin')
+                                <a href="{{ route('blog.edit', $post->id) }}" class="btn btn-sm btn-outline-secondary ms-2">Редактировать</a>
+                            @endif
+                        @endauth
+                    </div>
                 </div>
             </div>
         @endforeach
