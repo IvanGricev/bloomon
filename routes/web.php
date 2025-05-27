@@ -140,7 +140,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Управление заказами
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('orders.show');
-    Route::post('/orders/{id}', [AdminOrderController::class, 'update'])->name('orders.update');
+    Route::put('/orders/{id}', [AdminOrderController::class, 'update'])->name('orders.update');
     Route::delete('/orders/{id}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
 
     // Управление товарами

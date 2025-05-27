@@ -64,7 +64,8 @@ class SupportController extends Controller
         }
 
         $ticket->load(['messages.user', 'messages.attachments']);
-        return view('support.show', compact('ticket'));
+        $messages = $ticket->messages;
+        return view('support.show', compact('ticket', 'messages'));
     }
 
     public function storeMessage(StoreTicketRequest $request, SupportTicket $ticket)

@@ -47,7 +47,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($order->orderItems as $item)
+                    @foreach($order->items as $item)
                         <tr>
                             <td>{{ $item->product->name }}</td>
                             <td>{{ $item->quantity }}</td>
@@ -66,23 +66,25 @@
         </div>
     </div>
 
-    <div class="card">
+    <div class="card mb-4">
         <div class="card-header">
-            <h4>Изменить статус заказа</h4>
+            <h4>Управление заказом</h4>
         </div>
         <div class="card-body">
             <form action="{{ route('admin.orders.update', $order->id) }}" method="POST">
                 @csrf
+                @method('PUT')
                 <div class="mb-3">
-                    <label for="status" class="form-label">Статус</label>
-                    <select id="status" name="status" class="form-select">
-                        <option value="new" @if($order->status === 'new') selected @endif>Новый</option>
-                        <option value="processing" @if($order->status === 'processing') selected @endif>В обработке</option>
-                        <option value="delivered" @if($order->status === 'delivered') selected @endif>Доставлен</option>
-                        <option value="cancelled" @if($order->status === 'cancelled') selected @endif>Отменён</option>
+                    <label for="status" class="form-label">Статус заказа</label>
+                    <select name="status" id="status" class="form-select">
+                        <option value="new" {{ $order->status === 'new' ? 'selected' : '' }}>Новый</option>
+                        <option value="processing" {{ $order->status === 'processing' ? 'selected' : '' }}>В обработке</option>
+                        <option value="shipped" {{ $order->status === 'shipped' ? 'selected' : '' }}>Отправлен</option>
+                        <option value="delivered" {{ $order->status === 'delivered' ? 'selected' : '' }}>Доставлен</option>
+                        <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>Отменен</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                <button type="submit" class="btn btn-primary">Обновить статус</button>
             </form>
         </div>
     </div>

@@ -11,14 +11,14 @@ class AdminOrderController extends Controller
     // Список всех заказов
     public function index()
     {
-        $orders = Order::with('orderItems')->orderBy('order_date', 'desc')->get();
+        $orders = Order::with(['items', 'user'])->orderBy('order_date', 'desc')->get();
         return view('admin.orders.index', compact('orders'));
     }
 
     // Детали заказа
     public function show($id)
     {
-        $order = Order::with('orderItems.product', 'user')->findOrFail($id);
+        $order = Order::with(['items.product', 'user'])->findOrFail($id);
         return view('admin.orders.show', compact('order'));
     }
 

@@ -16,8 +16,10 @@ class AdminUserController extends Controller
 
     public function show($id)
     {
-         $user = User::withTrashed()->findOrFail($id);
-         return view('admin.users.show', compact('user'));
+        $user = User::withTrashed()
+            ->with(['orders', 'subscriptions', 'supportTickets'])
+            ->findOrFail($id);
+        return view('admin.users.show', compact('user'));
     }
     
     // Удаление (мягкое) пользователя

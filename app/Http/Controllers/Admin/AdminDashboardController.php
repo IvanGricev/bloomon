@@ -17,7 +17,7 @@ class AdminDashboardController extends Controller
         $ordersCount       = Order::count();
         $productsCount     = Product::count();
         $usersCount        = User::count();
-        $promotions        = Promotion::all();
+        $promotions        = Promotion::with('categories')->get();
         $subscriptionsCount = Subscription::count();
 
         return view('admin.index', compact(
