@@ -1,0 +1,293 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: #f8f9fb;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Montserrat', sans-serif;
+    padding: 2rem 1rem;
+}
+
+.card {
+    border-radius: 22px;
+    box-shadow: 0 6px 32px rgba(217,124,106,0.10), 0 1.5px 6px rgba(0,0,0,0.03);
+    border: none;
+    background: #fff;
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    background: #fff0ee;
+    border-radius: 22px 22px 0 0;
+    border-bottom: 1.5px solid #f8d3c7;
+    padding: 1.5rem 2rem;
+}
+
+.card-header h2, .card-header h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    color: #d97c6a;
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+/* Стили для чата */
+.ticket-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-height: 600px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.ticket-messages::-webkit-scrollbar {
+    width: 8px;
+}
+
+.ticket-messages::-webkit-scrollbar-track {
+    background: #f8f9fb;
+    border-radius: 4px;
+}
+
+.ticket-messages::-webkit-scrollbar-thumb {
+    background: #d97c6a;
+    border-radius: 4px;
+}
+
+.ticket-messages::-webkit-scrollbar-thumb:hover {
+    background: #b85c4a;
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    max-width: 75%;
+    padding: 1.1rem 1.4rem;
+    border-radius: 18px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.08rem;
+    line-height: 1.6;
+    box-shadow: 0 2px 12px rgba(217,124,106,0.08);
+    background: #f8f9fb;
+    color: #222;
+    position: relative;
+}
+
+.message .message-content {
+    margin-top: 0.5rem;
+    margin-bottom: 0.2rem;
+}
+
+.message strong {
+    color: #d97c6a;
+    font-weight: 700;
+}
+
+.message .text-muted {
+    color: #aaa !important;
+    font-size: 0.95rem;
+    margin-left: 0.5em;
+}
+
+/* Стили для вложений */
+.attachments {
+    margin-top: 0.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.attachment-image {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(217,124,106,0.10);
+    transition: all 0.2s ease;
+}
+
+.attachment-image img {
+    display: block;
+    max-width: 200px;
+    max-height: 200px;
+    width: auto;
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.2s ease;
+}
+
+.attachment-image:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(217,124,106,0.15);
+}
+
+.attachment-image:hover img {
+    transform: scale(1.02);
+}
+
+.image-preview {
+    display: block;
+    text-decoration: none;
+}
+
+/* Стили для файлов (не картинок) */
+.btn-outline-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1.5px solid #f0e6e3;
+    border-radius: 8px;
+    color: #d97c6a;
+    background: #fff;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-secondary:hover {
+    background: #fff0ee;
+    border-color: #d97c6a;
+    color: #d97c6a;
+}
+
+.btn-outline-secondary i {
+    font-size: 1.1rem;
+}
+
+/* Стили для форм и кнопок */
+.form-label {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: #d97c6a;
+    margin-bottom: 0.5rem;
+}
+
+.form-control, .form-select {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.08rem;
+    border: 1.5px solid #f0e6e3;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    background: #f8f9fb;
+    color: #222;
+    transition: border-color 0.2s;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #d97c6a;
+    outline: none;
+    box-shadow: none;
+}
+
+.form-text {
+    color: #b47b00;
+    font-size: 0.95rem;
+    margin-top: 0.2rem;
+}
+
+.btn {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    border-radius: 10px;
+    font-size: 1.08rem;
+    padding: 0.7rem 1.7rem;
+    transition: background 0.2s, color 0.2s, border 0.2s;
+}
+
+.btn-primary {
+    background: #d97c6a;
+    color: #fff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background: #b85c4a;
+}
+
+.btn-secondary {
+    background: #fff0ee;
+    color: #d97c6a;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background: #d97c6a;
+    color: #fff;
+}
+
+/* Стили для боковой панели */
+.list-group-item {
+    border: 1.5px solid #f0e6e3;
+    border-radius: 10px;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s;
+}
+
+.list-group-item:hover {
+    border-color: #d97c6a;
+    background: #fff0ee;
+}
+
+.list-group-item h6 {
+    color: #d97c6a;
+    font-weight: 600;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .card-header {
+        padding: 1rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .message {
+        font-size: 0.98rem;
+        padding: 0.7rem 1rem;
+        max-width: 85%;
+    }
+    
+    .btn {
+        font-size: 1rem;
+        padding: 0.7rem 1.2rem;
+    }
+    
+    .form-control, .form-select {
+        font-size: 1rem;
+        padding: 0.7rem 0.9rem;
+    }
+    
+    .ticket-messages {
+        max-height: 400px;
+    }
+    
+    .attachment-image img {
+        max-width: 150px;
+        max-height: 150px;
+    }
+    
+    .attachments {
+        gap: 0.5rem;
+    }
+    
+    .btn-outline-secondary {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+}
