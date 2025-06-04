@@ -13,8 +13,8 @@ class Order extends Model
 
     protected $fillable = [
         'user_id',
-        'delivery_address',
-        'delivery_phone',
+        'address',
+        'phone',
         'delivery_date',
         'delivery_time_slot',
         'delivery_preferences',
