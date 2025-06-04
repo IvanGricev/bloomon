@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Support\StoreTicketRequest;
+use App\Http\Requests\Support\StoreMessageRequest;
 use App\Models\SupportTicket;
 use App\Models\SupportMessage;
 use App\Models\SupportAttachment;
@@ -76,7 +77,7 @@ class SupportController extends Controller
         return view('support.show', compact('ticket', 'messages'));
     }
 
-    public function storeMessage(StoreTicketRequest $request, SupportTicket $ticket)
+    public function storeMessage(StoreMessageRequest $request, SupportTicket $ticket)
     {
         try {
             if ($ticket->user_id !== Auth::id()) {

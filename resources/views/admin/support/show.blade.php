@@ -1,5 +1,5 @@
 @extends('main')
-
+<link rel="stylesheet" href="{{ asset('css/support-user-show.css') }}">
 @section('content')
 <div class="container my-5">
     <div class="row">
@@ -26,7 +26,7 @@
                 <div class="card-body">
                     <div class="ticket-messages">
                         @foreach($messages as $message)
-                            <div class="message mb-4">
+                            <div class="message {{ $message->user->is_admin ? 'operator' : 'user' }}">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div>
                                         <strong>{{ $message->user->name }}</strong>

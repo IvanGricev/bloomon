@@ -4,6 +4,7 @@ body {
     font-family: 'Montserrat', sans-serif;
     background: #f8f9fb;
     min-height: 100vh;
+
 }
 
 .container {
@@ -22,6 +23,8 @@ body {
     box-shadow: 0 6px 32px rgba(217,124,106,0.10), 0 1.5px 6px rgba(0,0,0,0.03);
     border: none;
     background: #fff;
+    display: flex;
+    flex-direction: column;
 }
 
 .card-header {
@@ -29,6 +32,7 @@ body {
     border-radius: 22px 22px 0 0;
     border-bottom: 1.5px solid #f8d3c7;
     padding: 1.5rem 2rem;
+    flex-shrink: 0;
 }
 
 .card-header h2 {
@@ -52,13 +56,41 @@ body {
 .bg-secondary { background: #f0f0f0 !important; color: #888 !important; }
 
 .card-body {
-    padding: 2rem 2rem 1.5rem 2rem;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
 .ticket-messages {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    height: 500px;
+    overflow-y: auto;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    border: 1.5px solid #f0e6e3;
+}
+
+.ticket-messages::-webkit-scrollbar {
+    width: 8px;
+}
+
+.ticket-messages::-webkit-scrollbar-track {
+    background: #f8f9fb;
+    border-radius: 4px;
+}
+
+.ticket-messages::-webkit-scrollbar-thumb {
+    background: #d97c6a;
+    border-radius: 4px;
+}
+
+.ticket-messages::-webkit-scrollbar-thumb:hover {
+    background: #b85c4a;
 }
 
 .message {
@@ -231,26 +263,40 @@ body {
         display: block;
         margin-top: 20px;
     }
-    .container, .card-body, .card-header {
-        padding-left: 0.5rem !important;
-        padding-right: 0.5rem !important;
+    .card {
+        width: 100%;
+        max-height: calc(100vh - 40px);
+        border-radius: 16px;
+    }
+    .card-header {
+        border-radius: 16px 16px 0 0;
+        padding: 1rem;
+    }
+    .card-body {
+        padding: 1rem;
+    }
+    .ticket-messages {
+        height: 400px;
+        padding: 0.8rem;
+    }
+    .message {
+        font-size: 0.98rem;
+        padding: 0.7rem 1rem;
+        max-width: 85%;
+    }
+    .btn, .btn-outline-secondary, .btn-secondary, .btn-primary {
+        font-size: 1rem;
+        padding: 0.7rem 1.2rem;
+    }
+    .form-control {
+        font-size: 1rem;
+        padding: 0.7rem 0.9rem;
     }
     .container {
         max-width: 99vw;
     }
     .card-header h2 {
         font-size: 1.05rem;
-    }
-    .message {
-        font-size: 0.98rem;
-        padding: 0.7rem 1rem;
-    }
-    .btn, .btn-outline-secondary, .btn-secondary, .btn-primary {
-        font-size: 1rem;
-        padding: 0.7rem 1.2rem;
-    }
-    .attachment-image img {
-        max-width: 98vw;
     }
     .message-avatar {
         width: 32px;
