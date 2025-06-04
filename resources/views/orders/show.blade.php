@@ -60,11 +60,7 @@
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
-                                            @if($item->product->images->isNotEmpty())
-                                                <img src="{{ asset('storage/' . $item->product->images->first()->path) }}" 
-                                                     alt="{{ $item->product->name }}" 
-                                                     class="h-16 w-16 object-cover rounded">
-                                            @endif
+                                            
                                             <div class="ml-4">
                                                 <div class="text-sm font-medium text-gray-900">
                                                     {{ $item->product->name }}
