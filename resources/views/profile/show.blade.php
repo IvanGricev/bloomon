@@ -123,10 +123,6 @@
                             <label for="email" class="form-label">Email</label>
                             <input type="email" name="email" id="email" value="{{ auth()->user()->email }}" class="form-control" required>
                         </div>
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">Телефон</label>
-                            <input type="text" name="phone" id="phone" value="{{ auth()->user()->phone ?? '' }}" class="form-control" required>
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>

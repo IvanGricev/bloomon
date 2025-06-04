@@ -33,13 +33,11 @@ class ProfileController extends Controller
         $request->validate([
             'name'  => 'required|string|min:2|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . Auth::id(),
-            'phone' => 'required|string',
         ]);
 
         $user = Auth::user();
         $user->name  = $request->input('name');
         $user->email = $request->input('email');
-        $user->phone = $request->input('phone');
         $user->save();
 
         return redirect()->route('profile.show')->with('success', 'Профиль успешно обновлён.');
