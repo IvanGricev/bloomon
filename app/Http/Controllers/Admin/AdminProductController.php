@@ -180,29 +180,24 @@ class AdminProductController extends Controller
     }
 
     /**
-     * Быстрое обновление количества товара через AJAX.
+     * Обновление количества товара.
      */
     public function quickUpdateQuantity(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
-        
-        $validated = $request->validate([
-            'quantity' => 'required|integer|min:0',
-            'action' => 'required|in:set,add',
-        ]);
+        try {
+            $product = Product::findOrFail($id);
+            
+            $validated = $request->validate([
+                'quantity' => 'required|integer|min:0',
+            ]);
 
-        if ($validated['action'] === 'add') {
-            $product->quantity += $validated['quantity'];
-        } else {
-            $product->quantity = $validated['quantity'];
+            $product->update([
+                'quantity' => $validated['quantity']
+            ]);
+
+            return redirect()->back()->with('success', 'Количество товара обновлено');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Ошибка при обновлении количества: ' . $e->getMessage());
         }
-
-        $product->save();
-
-        return response()->json([
-            'success' => true,
-            'new_quantity' => $product->quantity,
-            'message' => 'Количество товара обновлено'
-        ]);
     }
 }

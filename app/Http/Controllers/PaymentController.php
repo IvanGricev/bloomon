@@ -21,12 +21,12 @@ class PaymentController extends Controller
     public function showCardPaymentForm(Request $request)
     {
         $orderId = $request->query('order_id');
-        $order = Order::with('orderItems.product')->findOrFail($orderId);
+        $order = Order::with('items.product')->findOrFail($orderId);
 
         $originalTotal = 0;
         $discountedTotal = 0;
         
-        foreach ($order->orderItems as $item) {
+        foreach ($order->items as $item) {
             $originalPrice = $item->product->price;
             $originalTotal += $originalPrice * $item->quantity;
             $discountedTotal += $item->price * $item->quantity;

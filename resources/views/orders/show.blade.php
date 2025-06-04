@@ -23,8 +23,8 @@
                 <p><strong>Дата заказа:</strong> {{ $order->order_date->format('d.m.Y H:i') }}</p>
                 <p><strong>Дата доставки:</strong> {{ $order->delivery_date->format('d.m.Y') }}</p>
                 <p><strong>Время доставки:</strong> {{ $order->delivery_time_slot }}</p>
-                <p><strong>Адрес доставки:</strong> {{ $order->delivery_address }}</p>
-                <p><strong>Телефон:</strong> {{ $order->delivery_phone }}</p>
+                <p><strong>Адрес доставки:</strong> {{ $order->address }}</p>
+                <p><strong>Телефон:</strong> {{ $order->phone }}</p>
                 <p><strong>Способ оплаты:</strong> 
                     @if($order->payment_method === 'cash')
                         Наличными при получении
