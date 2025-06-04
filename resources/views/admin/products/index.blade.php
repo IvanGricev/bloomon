@@ -9,6 +9,18 @@
         <a href="{{ route('admin.products.create') }}" class="btn btn-primary">Добавить товар</a>
     </div>
 
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
@@ -38,27 +50,23 @@
                         <td>{{ $product->name }}</td>
                         <td>{{ number_format($product->price, 2, ',', ' ') }} руб.</td>
                         <td>
-                            <div class="d-flex align-items-center">
+                            <form action="{{ route('admin.products.quantity.update', $product->id) }}" 
+                                  method="POST" 
+                                  class="d-flex align-items-center">
+                                @csrf
                                 <div class="input-group input-group-sm" style="width: 120px;">
                                     <input type="number" 
                                            class="form-control quantity-input" 
+                                           name="quantity"
                                            value="{{ $product->quantity }}" 
                                            min="0" 
-                                           data-product-id="{{ $product->id }}"
                                            style="text-align: center;">
                                     <button class="btn btn-outline-secondary btn-sm" 
-                                            type="button"
-                                            onclick="updateQuantity({{ $product->id }}, 'set')">
+                                            type="submit">
                                         ✓
                                     </button>
                                 </div>
-                                <button class="btn btn-success btn-sm ms-2" 
-                                        type="button"
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#addQuantityModal{{ $product->id }}">
-                                    +
-                                </button>
-                            </div>
+                            </form>
                             <small class="text-muted d-block mt-1">
                                 {{ trans_choice('единица|единицы|единиц', $product->quantity) }}
                             </small>
@@ -79,133 +87,11 @@
                             </div>
                         </td>
                     </tr>
-
-                    <!-- Модальное окно для пополнения склада -->
-                    <div class="modal fade" id="addQuantityModal{{ $product->id }}" tabindex="-1">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Пополнить склад: {{ $product->name }}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label class="form-label">Добавить количество</label>
-                                        <div class="input-group">
-                                            <input type="number" 
-                                                   class="form-control" 
-                                                   id="addQuantity{{ $product->id }}" 
-                                                   min="1" 
-                                                   value="1">
-                                            <span class="input-group-text">{{ trans_choice('единица|единицы|единиц', 1) }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                                    <button type="button" 
-                                            class="btn btn-primary" 
-                                            onclick="updateQuantity({{ $product->id }}, 'add')">
-                                        Добавить
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 @endforeach
             </tbody>
         </table>
     </div>
 </div>
-
-@push('scripts')
-<script>
-    // Функция для обновления количества товара
-    function updateQuantity(productId, action) {
-        let quantity;
-        if (action === 'add') {
-            quantity = document.getElementById('addQuantity' + productId).value;
-        } else {
-            quantity = document.querySelector(`.quantity-input[data-product-id="${productId}"]`).value;
-        }
-
-        fetch(`/admin/products/${productId}/quantity`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: JSON.stringify({
-                quantity: parseInt(quantity),
-                action: action
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Обновляем отображение количества
-                const input = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
-                input.value = data.new_quantity;
-                
-                // Обновляем текст с единицами измерения
-                const unitsText = input.closest('td').querySelector('small');
-                unitsText.textContent = getUnitsText(data.new_quantity);
-                
-                // Закрываем модальное окно, если оно открыто
-                const modal = document.getElementById('addQuantityModal' + productId);
-                if (modal) {
-                    const modalInstance = bootstrap.Modal.getInstance(modal);
-                    if (modalInstance) {
-                        modalInstance.hide();
-                    }
-                }
-                
-                // Показываем уведомление об успехе
-                showNotification('success', data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('error', 'Произошла ошибка при обновлении количества');
-        });
-    }
-
-    // Функция для получения правильного склонения слова "единица"
-    function getUnitsText(quantity) {
-        const cases = [2, 0, 1, 1, 1, 2];
-        const titles = ['единица', 'единицы', 'единиц'];
-        const index = (quantity % 100 > 4 && quantity % 100 < 20) ? 2 : cases[(quantity % 10 < 5) ? quantity % 10 : 5];
-        return titles[index];
-    }
-
-    // Функция для показа уведомлений
-    function showNotification(type, message) {
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
-        alertDiv.style.zIndex = '1050';
-        alertDiv.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        document.body.appendChild(alertDiv);
-        
-        setTimeout(() => {
-            alertDiv.remove();
-        }, 3000);
-    }
-
-    // Обработчик Enter для полей ввода количества
-    document.querySelectorAll('.quantity-input').forEach(input => {
-        input.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const productId = this.dataset.productId;
-                updateQuantity(productId, 'set');
-            }
-        });
-    });
-</script>
-@endpush
 
 @push('styles')
 <style>
@@ -215,10 +101,6 @@
     
     .input-group-sm > .btn {
         padding: 0.25rem 0.5rem;
-    }
-    
-    .modal-dialog {
-        max-width: 400px;
     }
 </style>
 @endpush
