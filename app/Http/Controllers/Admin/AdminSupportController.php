@@ -29,12 +29,12 @@ class AdminSupportController extends Controller
         
         $user = $ticket->user;
         $recentOrders = $user->orders()
+            ->with('items')
             ->latest()
             ->take(5)
             ->get();
         
         $subscriptions = $user->subscriptions()
-            ->with('plan')
             ->get();
         
         return view('admin.support.show', compact('ticket', 'messages', 'user', 'recentOrders', 'subscriptions'));

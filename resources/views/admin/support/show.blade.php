@@ -141,8 +141,19 @@
                                         <h6 class="mb-1">Заказ #{{ $order->id }}</h6>
                                         <small>{{ $order->created_at->format('d.m.Y') }}</small>
                                     </div>
-                                    <p class="mb-1">{{ number_format($order->total, 2, ',', ' ') }} руб.</p>
-                                    <small class="text-muted">{{ $order->status }}</small>
+                                    <p class="mb-1">{{ number_format($order->total_price, 2, ',', ' ') }} руб.</p>
+                                    <small class="text-muted">
+                                        @switch($order->status)
+                                            @case('pending') Ожидает оплаты @break
+                                            @case('processing') В обработке @break
+                                            @case('completed') Выполнен @break
+                                            @case('cancelled') Отменён @break
+                                            @case('new') Новый @break
+                                            @case('shipped') Отправлен @break
+                                            @case('delivered') Доставлен @break
+                                            @default {{ $order->status }}
+                                        @endswitch
+                                    </small>
                                 </a>
                             @endforeach
                         </div>
@@ -163,12 +174,19 @@
                             @foreach($subscriptions as $subscription)
                                 <div class="list-group-item">
                                     <div class="d-flex w-100 justify-content-between">
-                                        <h6 class="mb-1">{{ $subscription->plan->name }}</h6>
-                                        <small>{{ $subscription->status }}</small>
+                                        <h6 class="mb-1">{{ $subscription->name }}</h6>
+                                        <small>
+                                            @switch($subscription->pivot->status)
+                                                @case('active') Активна @break
+                                                @case('paused') Приостановлена @break
+                                                @case('cancelled') Отменена @break
+                                                @default {{ $subscription->pivot->status }}
+                                            @endswitch
+                                        </small>
                                     </div>
-                                    <p class="mb-1">{{ number_format($subscription->plan->price, 2, ',', ' ') }} руб./мес.</p>
+                                    <p class="mb-1">{{ number_format($subscription->price, 2, ',', ' ') }} руб./мес.</p>
                                     <small class="text-muted">
-                                        До {{ $subscription->end_date->format('d.m.Y') }}
+                                        До {{ $subscription->pivot->subscription_end_date->format('d.m.Y') }}
                                     </small>
                                 </div>
                             @endforeach
