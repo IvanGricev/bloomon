@@ -17,7 +17,17 @@
                         @elseif($order->status === 'cancelled') bg-red-100 text-red-800
                         @else bg-gray-100 text-gray-800
                         @endif">
-                        {{ $order->status }}
+                        @switch($order->status)
+                            @case('new') Новый @break
+                            @case('pending') Ожидает оплаты @break
+                            @case('processing') В обработке @break
+                            @case('shipped') Отправлен @break
+                            @case('delivered') Доставлен @break
+                            @case('completed') Выполнен @break
+                            @case('cancelled') Отменен @break
+                            @case('paid') Оплачен @break
+                            @default {{ $order->status }}
+                        @endswitch
                     </span>
                 </p>
                 <p><strong>Дата заказа:</strong> {{ $order->order_date->format('d.m.Y H:i') }}</p>

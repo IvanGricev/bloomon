@@ -42,14 +42,6 @@
             <label class="form-label">Описание</label>
             <textarea name="description" class="form-control">{{ $subscription->description }}</textarea>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Изображение подписки</label>
-            <input type="file" name="image" class="form-control" accept="image/*">
-            @if($subscription->image)
-                <p class="mt-2">Текущее изображение:</p>
-                <img src="{{ asset('uploads/subscriptions/' . $subscription->image) }}" alt="{{ $subscription->name }}" style="max-height: 80px;">
-            @endif
-        </div>
         <button type="submit" class="btn btn-primary">Обновить подписку</button>
     </form>
 </div>

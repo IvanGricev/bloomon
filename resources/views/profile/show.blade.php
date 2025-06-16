@@ -36,7 +36,12 @@
                                         Последняя оплата: {{ $subscription->pivot->last_payment_date ? $subscription->pivot->last_payment_date->format('d.m.Y') : 'Нет данных' }}<br>
                                         Действует до: {{ $subscription->pivot->subscription_end_date ? $subscription->pivot->subscription_end_date->format('d.m.Y') : 'Нет данных' }}<br>
                                         Статус: <span class="{{ $subscription->pivot->status === 'active' ? 'text-success' : 'text-danger' }}">
-                                            {{ $subscription->pivot->status === 'active' ? 'Активна' : 'Отменена' }}
+                                            @switch($subscription->pivot->status)
+                                                @case('active') Активна @break
+                                                @case('paused') Приостановлена @break
+                                                @case('cancelled') Отменена @break
+                                                @default {{ $subscription->pivot->status }}
+                                            @endswitch
                                         </span>
                                     </small>
                                 </p>

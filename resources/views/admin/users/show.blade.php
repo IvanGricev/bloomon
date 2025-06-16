@@ -12,7 +12,13 @@
             <div class="row">
                 <div class="col-md-6">
                     <p><strong>Email:</strong> {{ $user->email }}</p>
-                    <p><strong>Роль:</strong> {{ $user->role }}</p>
+                    <p><strong>Роль:</strong> 
+                        @switch($user->role)
+                            @case('admin') Администратор @break
+                            @case('client') Клиент @break
+                            @default {{ $user->role }}
+                        @endswitch
+                    </p>
                     <p>
                         <strong>Статус:</strong>
                         @if($user->deleted_at)
@@ -57,9 +63,9 @@
                                         @csrf
                                         @method('PUT')
                                         <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
-                                            <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Ожидает</option>
+                                            <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Ожидает оплаты</option>
                                             <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>В обработке</option>
-                                            <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Завершен</option>
+                                            <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Выполнен</option>
                                             <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Отменен</option>
                                         </select>
                                     </form>
@@ -142,7 +148,15 @@
                             <tr>
                                 <td>{{ $ticket->id }}</td>
                                 <td>{{ $ticket->subject }}</td>
-                                <td>{{ $ticket->status }}</td>
+                                <td>
+                                    @switch($ticket->status)
+                                        @case('new') Новый @break
+                                        @case('in_progress') На рассмотрении @break
+                                        @case('answered') Отвечен @break
+                                        @case('closed') Закрыт @break
+                                        @default {{ $ticket->status }}
+                                    @endswitch
+                                </td>
                                 <td>{{ $ticket->created_at->format('d.m.Y H:i') }}</td>
                                 <td>
                                     <a href="{{ route('admin.support.show', $ticket->id) }}" class="btn btn-sm btn-info">Просмотр</a>

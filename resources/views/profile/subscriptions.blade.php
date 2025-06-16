@@ -41,7 +41,12 @@
                             <p class="mb-0">
                                 <strong>Статус:</strong><br>
                                 <span class="badge bg-{{ $subscription->pivot->status === 'active' ? 'success' : 'danger' }}">
-                                    {{ $subscription->pivot->status === 'active' ? 'Активна' : 'Отменена' }}
+                                    @switch($subscription->pivot->status)
+                                        @case('active') Активна @break
+                                        @case('paused') Приостановлена @break
+                                        @case('cancelled') Отменена @break
+                                        @default {{ $subscription->pivot->status }}
+                                    @endswitch
                                 </span>
                             </p>
                         </div>

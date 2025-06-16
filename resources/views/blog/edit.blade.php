@@ -33,7 +33,7 @@
             @endif
         </div>
         <button type="submit" class="btn btn-primary">Сохранить</button>
-        <a href="{{ route('blog.index') }}" class="btn btn-secondary ms-2">Отмена</a>
+        <a href="{{ route('blog.index') }}" class="btn btn-secondary ms-2">Назад</a>
     </form>
 </div>
 <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>

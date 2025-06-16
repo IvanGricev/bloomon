@@ -19,7 +19,19 @@
                     <td>{{ $order->id }}</td>
                     <td>{{ $order->user->name }}</td>
                     <td>{{ \Carbon\Carbon::parse($order->order_date)->format('d.m.Y') }}</td>
-                    <td>{{ $order->status }}</td>
+                    <td>
+                        @switch($order->status)
+                            @case('new') Новый @break
+                            @case('pending') Ожидает оплаты @break
+                            @case('processing') В обработке @break
+                            @case('shipped') Отправлен @break
+                            @case('delivered') Доставлен @break
+                            @case('completed') Выполнен @break
+                            @case('cancelled') Отменен @break
+                            @case('paid') Оплачен @break
+                            @default {{ $order->status }}
+                        @endswitch
+                    </td>
                     <td>{{ $order->total_price }} руб.</td>
                     <td>
                         <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-sm btn-info">Подробнее</a>

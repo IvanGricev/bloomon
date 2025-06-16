@@ -1,6 +1,8 @@
 @extends('main')
 
 <link rel="stylesheet" href="{{ asset('css/checkout.css') }}">
+<link rel="stylesheet" href="{{ asset('css/address-autocomplete.css') }}">
+<script src="{{ asset('js/address-autocomplete.js') }}" defer></script>
 
 @section('content')
 <div class="container my-5">
@@ -21,10 +23,10 @@
 
     <form action="{{ route('orders.store') }}" method="POST" id="checkoutForm">
         @csrf
-        <div class="mb-3">
+        <div class="mb-3 form-group">
             <label for="address" class="form-label">Адрес доставки</label>
             <input type="text" name="address" id="address" class="form-control @error('address') is-invalid @enderror" 
-                   value="{{ old('address') }}" required>
+                   value="{{ old('address') }}" placeholder="Начните вводить город или улицу" required>
             <x-error-message field="address" />
         </div>
 

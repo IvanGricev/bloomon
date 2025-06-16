@@ -1,6 +1,7 @@
 @extends('main')
 
- <link rel="stylesheet" href="{{ asset('css/subscriptions-payment.css') }}">
+<link rel="stylesheet" href="{{ asset('css/subscriptions-payment.css') }}">
+<script src="{{ asset('js/card-validation.js') }}" defer></script>
 
 @section('content')
 <div class="container my-5">
@@ -49,7 +50,7 @@
                                    name="card_number" 
                                    placeholder="1234 5678 9012 3456" 
                                    required 
-                                   maxlength="16">
+                                   maxlength="19">
                             @error('card_number')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

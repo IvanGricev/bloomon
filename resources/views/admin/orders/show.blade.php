@@ -15,7 +15,19 @@
                 <div class="col-md-6">
                     <p><strong>Пользователь:</strong> {{ $order->user->name }} ({{ $order->user->email }})</p>
                     <p><strong>Дата заказа:</strong> {{ \Carbon\Carbon::parse($order->order_date)->format('d.m.Y') }}</p>
-                    <p><strong>Статус:</strong> {{ $order->status }}</p>
+                    <p><strong>Статус:</strong> 
+                        @switch($order->status)
+                            @case('new') Новый @break
+                            @case('pending') Ожидает оплаты @break
+                            @case('processing') В обработке @break
+                            @case('shipped') Отправлен @break
+                            @case('delivered') Доставлен @break
+                            @case('completed') Выполнен @break
+                            @case('cancelled') Отменен @break
+                            @case('paid') Оплачен @break
+                            @default {{ $order->status }}
+                        @endswitch
+                    </p>
                     <p><strong>Сумма:</strong> {{ number_format($order->total_price, 2, ',', ' ') }} руб.</p>
                 </div>
                 <div class="col-md-6">
@@ -78,10 +90,13 @@
                     <label for="status" class="form-label">Статус заказа</label>
                     <select name="status" id="status" class="form-select">
                         <option value="new" {{ $order->status === 'new' ? 'selected' : '' }}>Новый</option>
+                        <option value="pending" {{ $order->status === 'pending' ? 'selected' : '' }}>Ожидает оплаты</option>
                         <option value="processing" {{ $order->status === 'processing' ? 'selected' : '' }}>В обработке</option>
                         <option value="shipped" {{ $order->status === 'shipped' ? 'selected' : '' }}>Отправлен</option>
                         <option value="delivered" {{ $order->status === 'delivered' ? 'selected' : '' }}>Доставлен</option>
+                        <option value="completed" {{ $order->status === 'completed' ? 'selected' : '' }}>Выполнен</option>
                         <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>Отменен</option>
+                        <option value="paid" {{ $order->status === 'paid' ? 'selected' : '' }}>Оплачен</option>
                     </select>
                 </div>
                 <button type="submit" class="btn btn-primary">Сохранить</button>

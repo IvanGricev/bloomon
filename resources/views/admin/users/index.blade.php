@@ -19,7 +19,13 @@
                     <td>{{ $user->id }}</td>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
-                    <td>{{ $user->role }}</td>
+                    <td>
+                        @switch($user->role)
+                            @case('admin') Администратор @break
+                            @case('client') Клиент @break
+                            @default {{ $user->role }}
+                        @endswitch
+                    </td>
                     <td>
                         @if($user->deleted_at)
                             <span class="text-danger">Удалён</span>

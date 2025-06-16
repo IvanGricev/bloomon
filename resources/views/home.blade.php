@@ -53,7 +53,18 @@
                         <strong>{{ number_format($subscription->price, 2, ',', ' ') }} руб.</strong>
                     </div>
                     <div class="subscription-card__meta">
-                            {{ ucfirst($subscription->period) }} подписка, доставка: {{ $subscription->frequency }}
+                        @switch($subscription->period)
+                            @case('month') Ежемесячная @break
+                            @case('year') Годовая @break
+                            @default {{ ucfirst($subscription->period) }}
+                        @endswitch подписка, доставка: 
+                        @switch($subscription->frequency)
+                            @case('daily') Ежедневно @break
+                            @case('weekly') Еженедельно @break
+                            @case('biweekly') Раз в две недели @break
+                            @case('monthly') Ежемесячно @break
+                            @default {{ $subscription->frequency }}
+                        @endswitch
                     </div>
                 </div>
             </div>

@@ -27,11 +27,11 @@
         </div>
         <div class="mb-3">
             <label class="form-label">Частота доставки</label>
-            <input type="text" name="frequency" class="form-control" placeholder="daily, weekly и т.д." required>
+            <input type="text" name="frequency" class="form-control" placeholder="ежедневно, еженедельно и т.д." required>
         </div>
         <div class="mb-3">
             <label class="form-label">Период подписки</label>
-            <input type="text" name="period" class="form-control" placeholder="month или year" required>
+            <input type="text" name="period" class="form-control" placeholder="месяц или год" required>
         </div>
         <div class="mb-3">
             <label class="form-label">Цена подписки</label>
@@ -40,10 +40,6 @@
         <div class="mb-3">
             <label class="form-label">Описание</label>
             <textarea name="description" class="form-control"></textarea>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Изображение подписки</label>
-            <input type="file" name="image" class="form-control" accept="image/*">
         </div>
         <button type="submit" class="btn btn-primary">Создать подписку</button>
     </form>

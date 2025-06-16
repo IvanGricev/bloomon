@@ -34,8 +34,22 @@
                     <td>{{ $subscription->id }}</td>
                     <td>{{ $subscription->name }}</td>
                     <td>{{ $subscription->subscription_type }}</td>
-                    <td>{{ $subscription->frequency }}</td>
-                    <td>{{ $subscription->period }}</td>
+                    <td>
+                        @switch($subscription->frequency)
+                            @case('daily') Ежедневно @break
+                            @case('weekly') Еженедельно @break
+                            @case('biweekly') Раз в две недели @break
+                            @case('monthly') Ежемесячно @break
+                            @default {{ $subscription->frequency }}
+                        @endswitch
+                    </td>
+                    <td>
+                        @switch($subscription->period)
+                            @case('month') Ежемесячная @break
+                            @case('year') Годовая @break
+                            @default {{ ucfirst($subscription->period) }}
+                        @endswitch
+                    </td>
                     <td>{{ number_format($subscription->price, 2, ',', ' ') }} руб.</td>
                     <td>
                         <a href="{{ route('admin.subscriptions.edit', $subscription->id) }}" class="btn btn-sm btn-warning">Редактировать</a>

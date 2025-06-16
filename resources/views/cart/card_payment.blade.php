@@ -1,6 +1,7 @@
 @extends('main')
 
 <link rel="stylesheet" href="{{ asset('css/card_payment.css') }}">
+<script src="{{ asset('js/card-validation.js') }}" defer></script>
 
 @section('content')
 <div class="container my-5">
@@ -28,15 +29,42 @@
         <input type="hidden" name="order_id" value="{{ $order->id }}">
         <div class="mb-3">
             <label for="card_number" class="form-label">Номер карты</label>
-            <input type="text" name="card_number" id="card_number" class="form-control" placeholder="Введите номер карты" required>
+            <input type="text" 
+                                   class="form-control @error('card_number') is-invalid @enderror" 
+                                   id="card_number" 
+                                   name="card_number" 
+                                   placeholder="1234 5678 9012 3456" 
+                                   required 
+                                   maxlength="19">
+                            @error('card_number')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
         </div>
         <div class="mb-3">
             <label for="expiry_date" class="form-label">Срок действия карты</label>
-            <input type="text" name="expiry_date" id="expiry_date" class="form-control" placeholder="MM/YY" required>
+            <input type="text" 
+                                       class="form-control @error('expiry_date') is-invalid @enderror" 
+                                       id="expiry_date" 
+                                       name="expiry_date" 
+                                       placeholder="MM/YY" 
+                                       required 
+                                       maxlength="5">
+                                @error('expiry_date')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
         </div>
         <div class="mb-3">
             <label for="cvv" class="form-label">CVV</label>
-            <input type="text" name="cvv" id="cvv" class="form-control" placeholder="CVV" required>
+            <input type="text" 
+                                   class="form-control @error('cvv') is-invalid @enderror" 
+                                   id="cvv" 
+                                   name="cvv" 
+                                   placeholder="CVV" 
+                                   required 
+                                   maxlength="3">
+                            @error('cvv')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
         </div>
         <button type="submit" class="btn btn-primary">Оплатить</button>
     </form>

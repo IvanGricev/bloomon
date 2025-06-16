@@ -21,8 +21,22 @@
                         <img src="{{ asset('uploads/subscriptions/' . $subscription->image) }}" alt="{{ $subscription->name }}" class="img-fluid mb-3">
                     @endif
                     <p><strong>Тип подписки:</strong> {{ $subscription->subscription_type }}</p>
-                    <p><strong>Частота:</strong> {{ $subscription->frequency }}</p>
-                    <p><strong>Период:</strong> {{ $subscription->period }}</p>
+                    <p><strong>Частота:</strong> 
+                        @switch($subscription->frequency)
+                            @case('daily') Ежедневно @break
+                            @case('weekly') Еженедельно @break
+                            @case('biweekly') Раз в две недели @break
+                            @case('monthly') Ежемесячно @break
+                            @default {{ $subscription->frequency }}
+                        @endswitch
+                    </p>
+                    <p><strong>Период:</strong> 
+                        @switch($subscription->period)
+                            @case('month') Ежемесячная @break
+                            @case('year') Годовая @break
+                            @default {{ ucfirst($subscription->period) }}
+                        @endswitch
+                    </p>
                     <p><strong>Цена:</strong> {{ number_format($subscription->price, 2, ',', ' ') }} руб.</p>
                     <p><strong>Описание:</strong> {{ $subscription->description }}</p>
                 </div>
